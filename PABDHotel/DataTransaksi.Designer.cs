@@ -1,6 +1,6 @@
 ﻿namespace PABDHotel
 {
-    partial class Form1
+    partial class DataTransaksi
     {
         /// <summary>
         /// Required designer variable.
@@ -37,8 +37,6 @@
             this.Fasilitas = new System.Windows.Forms.Label();
             this.HargaFasilitas = new System.Windows.Forms.Label();
             this.TotalBiaya = new System.Windows.Forms.Label();
-            this.txtNamaPemilik = new System.Windows.Forms.TextBox();
-            this.txtNamaHewan = new System.Windows.Forms.TextBox();
             this.cmbJenisHewan = new System.Windows.Forms.ComboBox();
             this.cmbTipeKamar = new System.Windows.Forms.ComboBox();
             this.dtpCheckIn = new System.Windows.Forms.DateTimePicker();
@@ -51,6 +49,8 @@
             this.btnUbah = new System.Windows.Forms.Button();
             this.btnRefresh = new System.Windows.Forms.Button();
             this.dgvTransaksi = new System.Windows.Forms.DataGridView();
+            this.cmbNamaPemilik = new System.Windows.Forms.ComboBox();
+            this.cmbNamaHewan = new System.Windows.Forms.ComboBox();
             ((System.ComponentModel.ISupportInitialize)(this.dgvTransaksi)).BeginInit();
             this.SuspendLayout();
             // 
@@ -134,20 +134,6 @@
             this.TotalBiaya.Size = new System.Drawing.Size(76, 16);
             this.TotalBiaya.TabIndex = 8;
             this.TotalBiaya.Text = "Total Biaya";
-            // 
-            // txtNamaPemilik
-            // 
-            this.txtNamaPemilik.Location = new System.Drawing.Point(215, 49);
-            this.txtNamaPemilik.Name = "txtNamaPemilik";
-            this.txtNamaPemilik.Size = new System.Drawing.Size(435, 22);
-            this.txtNamaPemilik.TabIndex = 9;
-            // 
-            // txtNamaHewan
-            // 
-            this.txtNamaHewan.Location = new System.Drawing.Point(215, 77);
-            this.txtNamaHewan.Name = "txtNamaHewan";
-            this.txtNamaHewan.Size = new System.Drawing.Size(435, 22);
-            this.txtNamaHewan.TabIndex = 10;
             // 
             // cmbJenisHewan
             // 
@@ -260,11 +246,29 @@
             this.dgvTransaksi.TabIndex = 22;
             this.dgvTransaksi.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvTransaksi_CellClick);
             // 
-            // Form1
+            // cmbNamaPemilik
+            // 
+            this.cmbNamaPemilik.FormattingEnabled = true;
+            this.cmbNamaPemilik.Location = new System.Drawing.Point(215, 40);
+            this.cmbNamaPemilik.Name = "cmbNamaPemilik";
+            this.cmbNamaPemilik.Size = new System.Drawing.Size(435, 24);
+            this.cmbNamaPemilik.TabIndex = 23;
+            // 
+            // cmbNamaHewan
+            // 
+            this.cmbNamaHewan.FormattingEnabled = true;
+            this.cmbNamaHewan.Location = new System.Drawing.Point(215, 71);
+            this.cmbNamaHewan.Name = "cmbNamaHewan";
+            this.cmbNamaHewan.Size = new System.Drawing.Size(435, 24);
+            this.cmbNamaHewan.TabIndex = 24;
+            // 
+            // DataTransaksi
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(801, 513);
+            this.Controls.Add(this.cmbNamaHewan);
+            this.Controls.Add(this.cmbNamaPemilik);
             this.Controls.Add(this.dgvTransaksi);
             this.Controls.Add(this.btnRefresh);
             this.Controls.Add(this.btnUbah);
@@ -277,8 +281,6 @@
             this.Controls.Add(this.dtpCheckIn);
             this.Controls.Add(this.cmbTipeKamar);
             this.Controls.Add(this.cmbJenisHewan);
-            this.Controls.Add(this.txtNamaHewan);
-            this.Controls.Add(this.txtNamaPemilik);
             this.Controls.Add(this.TotalBiaya);
             this.Controls.Add(this.HargaFasilitas);
             this.Controls.Add(this.Fasilitas);
@@ -288,8 +290,8 @@
             this.Controls.Add(this.label1);
             this.Controls.Add(this.HewanID);
             this.Controls.Add(this.PemilikID);
-            this.Name = "Form1";
-            this.Text = "Form1";
+            this.Name = "DataTransaksi";
+            this.Text = "Data Transaksi";
             this.Load += new System.EventHandler(this.Form1_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dgvTransaksi)).EndInit();
             this.ResumeLayout(false);
@@ -308,8 +310,6 @@
         private System.Windows.Forms.Label Fasilitas;
         private System.Windows.Forms.Label HargaFasilitas;
         private System.Windows.Forms.Label TotalBiaya;
-        private System.Windows.Forms.TextBox txtNamaPemilik;
-        private System.Windows.Forms.TextBox txtNamaHewan;
         private System.Windows.Forms.ComboBox cmbJenisHewan;
         private System.Windows.Forms.ComboBox cmbTipeKamar;
         private System.Windows.Forms.DateTimePicker dtpCheckIn;
@@ -322,6 +322,8 @@
         private System.Windows.Forms.Button btnUbah;
         private System.Windows.Forms.Button btnRefresh;
         private System.Windows.Forms.DataGridView dgvTransaksi;
+        private System.Windows.Forms.ComboBox cmbNamaPemilik;
+        private System.Windows.Forms.ComboBox cmbNamaHewan;
     }
 }
 

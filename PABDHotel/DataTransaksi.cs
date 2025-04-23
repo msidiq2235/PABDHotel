@@ -5,11 +5,11 @@ using System.Windows.Forms;
 
 namespace PABDHotel
 {
-    public partial class Form1 : Form
+    public partial class DataTransaksi : Form
     {
         private string connectionString = "Data Source=LAPTOP-0LTDAB53\\MSIDIQ;Initial Catalog=HotelHewanPeliharaanKuan;Integrated Security=True";
 
-        public Form1()
+        public DataTransaksi()
         {
             InitializeComponent();
         }
@@ -17,13 +17,60 @@ namespace PABDHotel
         private void Form1_Load(object sender, EventArgs e)
         {
             LoadTransaksi();
+            LoadPemilik();
+            LoadHewan();
             dgvTransaksi.CellClick += dgvTransaksi_CellClick;
         }
 
+        private void LoadPemilik()
+        {
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                try
+                {
+                    conn.Open();
+                    string query = "SELECT PemilikID, Nama FROM PemilikHewan";
+                    SqlDataAdapter da = new SqlDataAdapter(query, conn);
+                    DataTable dt = new DataTable();
+                    da.Fill(dt);
+                    cmbNamaPemilik.DisplayMember = "Nama";  // Tampilkan nama di ComboBox
+                    cmbNamaPemilik.ValueMember = "PemilikID";  // Gunakan PemilikID untuk identifikasi
+                    cmbNamaPemilik.DataSource = dt;
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error: " + ex.Message);
+                }
+            }
+        }
+
+        private void LoadHewan()
+        {
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                try
+                {
+                    conn.Open();
+                    string query = "SELECT HewanID, NamaHewan FROM Hewan";
+                    SqlDataAdapter da = new SqlDataAdapter(query, conn);
+                    DataTable dt = new DataTable();
+                    da.Fill(dt);
+                    cmbNamaHewan.DisplayMember = "NamaHewan";  // Tampilkan nama hewan di ComboBox
+                    cmbNamaHewan.ValueMember = "HewanID";  // Gunakan HewanID untuk identifikasi
+                    cmbNamaHewan.DataSource = dt;
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error: " + ex.Message);
+                }
+            }
+        }
+
+
         private void ClearForm()
         {
-            txtNamaPemilik.Clear();
-            txtNamaHewan.Clear();
+            cmbNamaPemilik.SelectedIndex = -1;
+            cmbNamaHewan.SelectedIndex = -1;
             cmbJenisHewan.SelectedIndex = -1;
             cmbTipeKamar.SelectedIndex = -1;
             dtpCheckIn.Value = DateTime.Now;
@@ -32,7 +79,7 @@ namespace PABDHotel
             txtHargaFasilitas.Clear();
             txtTotalBiaya.Text = "";
 
-            txtNamaPemilik.Focus();
+            cmbNamaPemilik.Focus();
         }
 
         private void LoadTransaksi()
@@ -71,20 +118,15 @@ namespace PABDHotel
                 {
                     conn.Open();
 
-                    // 1. Insert PemilikHewan jika belum ada
-                    string namaPemilik = txtNamaPemilik.Text.Trim();
-                    int pemilikId = GetOrCreatePemilik(conn, namaPemilik);
+                    // Ambil PemilikID dan HewanID dari ComboBox
+                    int pemilikId = Convert.ToInt32(cmbNamaPemilik.SelectedValue);
+                    int hewanId = Convert.ToInt32(cmbNamaHewan.SelectedValue);
 
-                    // 2. Insert Hewan
-                    string namaHewan = txtNamaHewan.Text.Trim();
-                    string jenis = cmbJenisHewan.Text;
-                    int hewanId = InsertHewan(conn, namaHewan, jenis, pemilikId);
-
-                    // 3. Ambil ID kamar dari tipe kamar
+                    // Cek ID Kamar dari tipe kamar yang dipilih
                     string tipeKamar = cmbTipeKamar.Text;
                     int kamarId = GetKamarId(conn, tipeKamar);
 
-                    // 4. Hitung total biaya
+                    // Hitung total biaya
                     DateTime checkIn = dtpCheckIn.Value;
                     DateTime checkOut = dtpCheckOut.Value;
                     decimal hargaFasilitas = string.IsNullOrEmpty(txtHargaFasilitas.Text) ? 0 : Convert.ToDecimal(txtHargaFasilitas.Text);
@@ -92,10 +134,10 @@ namespace PABDHotel
                     int totalHari = (checkOut - checkIn).Days;
                     decimal totalBiaya = (hargaKamar * totalHari) + hargaFasilitas;
 
-                    // 5. Insert ke Transaksi
+                    // Insert ke Transaksi
                     string query = @"
-                        INSERT INTO Transaksi (PemilikID, HewanID, KamarID, TanggalCheckIn, TanggalCheckOut, NamaFasilitas, HargaFasilitas, TotalBiaya)
-                        VALUES (@PemilikID, @HewanID, @KamarID, @CheckIn, @CheckOut, @Fasilitas, @HargaFasilitas, @TotalBiaya)";
+                INSERT INTO Transaksi (PemilikID, HewanID, KamarID, TanggalCheckIn, TanggalCheckOut, NamaFasilitas, HargaFasilitas, TotalBiaya)
+                VALUES (@PemilikID, @HewanID, @KamarID, @CheckIn, @CheckOut, @Fasilitas, @HargaFasilitas, @TotalBiaya)";
 
                     using (SqlCommand cmd = new SqlCommand(query, conn))
                     {
@@ -121,6 +163,7 @@ namespace PABDHotel
             }
         }
 
+
         private void BtnUbah_Click(object sender, EventArgs e)
         {
             if (dgvTransaksi.SelectedRows.Count > 0 &&
@@ -129,27 +172,20 @@ namespace PABDHotel
                 int transaksiId = Convert.ToInt32(dgvTransaksi.SelectedRows[0].Cells["TransaksiID"].Value);
 
                 // Ambil nilai dari form
-                string namaPemilik = txtNamaPemilik.Text.Trim();
-                string namaHewan = txtNamaHewan.Text.Trim();
-                object selectedJenisHewan = cmbJenisHewan.SelectedItem;
-                object selectedTipeKamar = cmbTipeKamar.SelectedItem;
+                int pemilikId = Convert.ToInt32(cmbNamaPemilik.SelectedValue);
+                int hewanId = Convert.ToInt32(cmbNamaHewan.SelectedValue);
+                string tipeKamar = cmbTipeKamar.SelectedItem.ToString();
                 DateTime checkIn = dtpCheckIn.Value;
                 DateTime checkOut = dtpCheckOut.Value;
                 string namaFasilitas = txtFasilitas.Text.Trim();
                 decimal hargaFasilitas = string.IsNullOrEmpty(txtHargaFasilitas.Text) ? 0 : Convert.ToDecimal(txtHargaFasilitas.Text);
 
                 // Validasi isian
-                if (string.IsNullOrWhiteSpace(namaPemilik) ||
-                    string.IsNullOrWhiteSpace(namaHewan) ||
-                    selectedJenisHewan == null ||
-                    selectedTipeKamar == null)
+                if (string.IsNullOrWhiteSpace(namaFasilitas) || cmbTipeKamar.SelectedItem == null || cmbNamaPemilik.SelectedItem == null || cmbNamaHewan.SelectedItem == null)
                 {
                     MessageBox.Show("Harap isi semua data!");
                     return;
                 }
-
-                string jenisHewan = selectedJenisHewan.ToString();
-                string tipeKamar = selectedTipeKamar.ToString();
 
                 // Validasi tanggal
                 if (checkIn.Date > checkOut.Date)
@@ -165,12 +201,6 @@ namespace PABDHotel
                         conn.Open();
 
                         // Cek/Insert pemilik
-                        int pemilikId = GetOrCreatePemilik(conn, namaPemilik);
-
-                        // Cek/Insert hewan
-                        int hewanId = InsertHewan(conn, namaHewan, jenisHewan, pemilikId);
-
-                        // Ambil ID kamar
                         int kamarId = GetKamarId(conn, tipeKamar);
 
                         // Hitung total biaya
@@ -221,6 +251,7 @@ namespace PABDHotel
                 MessageBox.Show("Pilih transaksi yang ingin diubah!");
             }
         }
+
 
 
 
@@ -377,8 +408,8 @@ namespace PABDHotel
                         {
                             if (reader.Read())
                             {
-                                txtNamaPemilik.Text = reader["Nama"].ToString();
-                                txtNamaHewan.Text = reader["NamaHewan"].ToString();
+                                cmbNamaPemilik.SelectedItem = reader["Nama"].ToString();
+                                cmbNamaHewan.SelectedItem = reader["NamaHewan"].ToString();
                                 cmbJenisHewan.SelectedItem = reader["Jenis"].ToString();
                                 cmbTipeKamar.SelectedItem = reader["TipeKamar"].ToString();
                                 dtpCheckIn.Value = Convert.ToDateTime(reader["TanggalCheckIn"]);

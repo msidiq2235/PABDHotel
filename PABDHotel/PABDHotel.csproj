@@ -46,16 +46,52 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Form1.cs">
+    <Compile Include="DataHewan.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <Compile Include="DataHewan.Designer.cs">
+      <DependentUpon>DataHewan.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DataKamar.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DataKamar.Designer.cs">
+      <DependentUpon>DataKamar.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DataPemilik.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DataPemilik.Designer.cs">
+      <DependentUpon>DataPemilik.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DataTransaksi.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DataTransaksi.Designer.cs">
+      <DependentUpon>DataTransaksi.cs</DependentUpon>
+    </Compile>
+    <Compile Include="menu.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="menu.Designer.cs">
+      <DependentUpon>menu.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="Form1.resx">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <EmbeddedResource Include="DataHewan.resx">
+      <DependentUpon>DataHewan.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DataKamar.resx">
+      <DependentUpon>DataKamar.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DataPemilik.resx">
+      <DependentUpon>DataPemilik.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DataTransaksi.resx">
+      <DependentUpon>DataTransaksi.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="menu.resx">
+      <DependentUpon>menu.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
