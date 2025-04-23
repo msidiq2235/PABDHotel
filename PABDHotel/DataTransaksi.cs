@@ -17,60 +17,13 @@ namespace PABDHotel
         private void Form1_Load(object sender, EventArgs e)
         {
             LoadTransaksi();
-            LoadPemilik();
-            LoadHewan();
             dgvTransaksi.CellClick += dgvTransaksi_CellClick;
         }
 
-        private void LoadPemilik()
-        {
-            using (SqlConnection conn = new SqlConnection(connectionString))
-            {
-                try
-                {
-                    conn.Open();
-                    string query = "SELECT PemilikID, Nama FROM PemilikHewan";
-                    SqlDataAdapter da = new SqlDataAdapter(query, conn);
-                    DataTable dt = new DataTable();
-                    da.Fill(dt);
-                    cmbNamaPemilik.DisplayMember = "Nama";  // Tampilkan nama di ComboBox
-                    cmbNamaPemilik.ValueMember = "PemilikID";  // Gunakan PemilikID untuk identifikasi
-                    cmbNamaPemilik.DataSource = dt;
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("Error: " + ex.Message);
-                }
-            }
-        }
-
-        private void LoadHewan()
-        {
-            using (SqlConnection conn = new SqlConnection(connectionString))
-            {
-                try
-                {
-                    conn.Open();
-                    string query = "SELECT HewanID, NamaHewan FROM Hewan";
-                    SqlDataAdapter da = new SqlDataAdapter(query, conn);
-                    DataTable dt = new DataTable();
-                    da.Fill(dt);
-                    cmbNamaHewan.DisplayMember = "NamaHewan";  // Tampilkan nama hewan di ComboBox
-                    cmbNamaHewan.ValueMember = "HewanID";  // Gunakan HewanID untuk identifikasi
-                    cmbNamaHewan.DataSource = dt;
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("Error: " + ex.Message);
-                }
-            }
-        }
-
-
         private void ClearForm()
         {
-            cmbNamaPemilik.SelectedIndex = -1;
-            cmbNamaHewan.SelectedIndex = -1;
+            txtNamaPemilik.Clear();
+            txtNamaHewan.Clear();
             cmbJenisHewan.SelectedIndex = -1;
             cmbTipeKamar.SelectedIndex = -1;
             dtpCheckIn.Value = DateTime.Now;
@@ -79,7 +32,7 @@ namespace PABDHotel
             txtHargaFasilitas.Clear();
             txtTotalBiaya.Text = "";
 
-            cmbNamaPemilik.Focus();
+            txtNamaPemilik.Focus();
         }
 
         private void LoadTransaksi()
@@ -118,15 +71,20 @@ namespace PABDHotel
                 {
                     conn.Open();
 
-                    // Ambil PemilikID dan HewanID dari ComboBox
-                    int pemilikId = Convert.ToInt32(cmbNamaPemilik.SelectedValue);
-                    int hewanId = Convert.ToInt32(cmbNamaHewan.SelectedValue);
+                    // 1. Insert PemilikHewan jika belum ada
+                    string namaPemilik = txtNamaPemilik.Text.Trim();
+                    int pemilikId = GetOrCreatePemilik(conn, namaPemilik);
 
-                    // Cek ID Kamar dari tipe kamar yang dipilih
+                    // 2. Insert Hewan
+                    string namaHewan = txtNamaHewan.Text.Trim();
+                    string jenis = cmbJenisHewan.Text;
+                    int hewanId = InsertHewan(conn, namaHewan, jenis, pemilikId);
+
+                    // 3. Ambil ID kamar dari tipe kamar
                     string tipeKamar = cmbTipeKamar.Text;
                     int kamarId = GetKamarId(conn, tipeKamar);
 
-                    // Hitung total biaya
+                    // 4. Hitung total biaya
                     DateTime checkIn = dtpCheckIn.Value;
                     DateTime checkOut = dtpCheckOut.Value;
                     decimal hargaFasilitas = string.IsNullOrEmpty(txtHargaFasilitas.Text) ? 0 : Convert.ToDecimal(txtHargaFasilitas.Text);
@@ -134,10 +92,10 @@ namespace PABDHotel
                     int totalHari = (checkOut - checkIn).Days;
                     decimal totalBiaya = (hargaKamar * totalHari) + hargaFasilitas;
 
-                    // Insert ke Transaksi
+                    // 5. Insert ke Transaksi
                     string query = @"
-                INSERT INTO Transaksi (PemilikID, HewanID, KamarID, TanggalCheckIn, TanggalCheckOut, NamaFasilitas, HargaFasilitas, TotalBiaya)
-                VALUES (@PemilikID, @HewanID, @KamarID, @CheckIn, @CheckOut, @Fasilitas, @HargaFasilitas, @TotalBiaya)";
+                        INSERT INTO Transaksi (PemilikID, HewanID, KamarID, TanggalCheckIn, TanggalCheckOut, NamaFasilitas, HargaFasilitas, TotalBiaya)
+                        VALUES (@PemilikID, @HewanID, @KamarID, @CheckIn, @CheckOut, @Fasilitas, @HargaFasilitas, @TotalBiaya)";
 
                     using (SqlCommand cmd = new SqlCommand(query, conn))
                     {
@@ -163,7 +121,6 @@ namespace PABDHotel
             }
         }
 
-
         private void BtnUbah_Click(object sender, EventArgs e)
         {
             if (dgvTransaksi.SelectedRows.Count > 0 &&
@@ -172,20 +129,27 @@ namespace PABDHotel
                 int transaksiId = Convert.ToInt32(dgvTransaksi.SelectedRows[0].Cells["TransaksiID"].Value);
 
                 // Ambil nilai dari form
-                int pemilikId = Convert.ToInt32(cmbNamaPemilik.SelectedValue);
-                int hewanId = Convert.ToInt32(cmbNamaHewan.SelectedValue);
-                string tipeKamar = cmbTipeKamar.SelectedItem.ToString();
+                string namaPemilik = txtNamaPemilik.Text.Trim();
+                string namaHewan = txtNamaHewan.Text.Trim();
+                object selectedJenisHewan = cmbJenisHewan.SelectedItem;
+                object selectedTipeKamar = cmbTipeKamar.SelectedItem;
                 DateTime checkIn = dtpCheckIn.Value;
                 DateTime checkOut = dtpCheckOut.Value;
                 string namaFasilitas = txtFasilitas.Text.Trim();
                 decimal hargaFasilitas = string.IsNullOrEmpty(txtHargaFasilitas.Text) ? 0 : Convert.ToDecimal(txtHargaFasilitas.Text);
 
                 // Validasi isian
-                if (string.IsNullOrWhiteSpace(namaFasilitas) || cmbTipeKamar.SelectedItem == null || cmbNamaPemilik.SelectedItem == null || cmbNamaHewan.SelectedItem == null)
+                if (string.IsNullOrWhiteSpace(namaPemilik) ||
+                    string.IsNullOrWhiteSpace(namaHewan) ||
+                    selectedJenisHewan == null ||
+                    selectedTipeKamar == null)
                 {
                     MessageBox.Show("Harap isi semua data!");
                     return;
                 }
+
+                string jenisHewan = selectedJenisHewan.ToString();
+                string tipeKamar = selectedTipeKamar.ToString();
 
                 // Validasi tanggal
                 if (checkIn.Date > checkOut.Date)
@@ -201,6 +165,12 @@ namespace PABDHotel
                         conn.Open();
 
                         // Cek/Insert pemilik
+                        int pemilikId = GetOrCreatePemilik(conn, namaPemilik);
+
+                        // Cek/Insert hewan
+                        int hewanId = InsertHewan(conn, namaHewan, jenisHewan, pemilikId);
+
+                        // Ambil ID kamar
                         int kamarId = GetKamarId(conn, tipeKamar);
 
                         // Hitung total biaya
@@ -254,17 +224,75 @@ namespace PABDHotel
 
 
 
-
         private void BtnRefresh_Click(object sender, EventArgs e)
         {
             LoadTransaksi();
         }
 
 
-        
+        private int GetOrCreatePemilik(SqlConnection conn, string nama)
+        {
+            // Validasi input: pastikan nama tidak kosong atau null
+            if (string.IsNullOrWhiteSpace(nama))
+            {
+                throw new ArgumentException("Nama pemilik tidak boleh kosong!");
+            }
 
+            // Cek apakah pemilik dengan nama yang diberikan sudah ada
+            string query = "SELECT PemilikID FROM PemilikHewan WHERE Nama = @Nama";
+            SqlCommand cmd = new SqlCommand(query, conn);
+            cmd.Parameters.AddWithValue("@Nama", nama);
+            object result = cmd.ExecuteScalar();
 
+            // Jika ada, kembalikan PemilikID yang sudah ada
+            if (result != null)
+                return (int)result;
 
+            // Jika tidak ada, buat pemilik baru dengan data dummy
+            string noHpDummy = GenerateUniqueNoHP(conn);  // Memastikan NoHP unik
+            string emailDummy = "user_" + DateTime.Now.Ticks + "@dummy.com";  // Dummy email
+
+            query = "INSERT INTO PemilikHewan (Nama, NoHP, Email) OUTPUT INSERTED.PemilikID VALUES (@Nama, @NoHP, @Email)";
+            cmd = new SqlCommand(query, conn);
+            cmd.Parameters.AddWithValue("@Nama", nama);
+            cmd.Parameters.AddWithValue("@NoHP", noHpDummy);
+            cmd.Parameters.AddWithValue("@Email", emailDummy);
+
+            // Masukkan data baru dan kembalikan PemilikID
+            return (int)cmd.ExecuteScalar();
+        }
+
+        // Fungsi untuk menghasilkan NoHP yang unik
+        private string GenerateUniqueNoHP(SqlConnection conn)
+        {
+            // Membuat NoHP dengan GUID
+            string noHp = "000" + Guid.NewGuid().ToString("N").Substring(0, 7);  // Mengambil 7 karakter pertama dari GUID yang unik
+
+            // Memastikan keunikannya
+            string query = "SELECT COUNT(1) FROM PemilikHewan WHERE NoHP = @NoHP";
+            SqlCommand cmd = new SqlCommand(query, conn);
+            cmd.Parameters.AddWithValue("@NoHP", noHp);
+            int count = (int)cmd.ExecuteScalar();
+
+            if (count > 0)
+            {
+                // Jika sudah ada, coba lagi dengan GUID baru
+                return GenerateUniqueNoHP(conn);
+            }
+
+            return noHp;
+        }
+
+        private int InsertHewan(SqlConnection conn, string namaHewan, string jenis, int pemilikId)
+        {
+            string query = @"INSERT INTO Hewan (NamaHewan, Jenis, PemilikID) OUTPUT INSERTED.HewanID 
+                             VALUES (@NamaHewan, @Jenis, @PemilikID)";
+            SqlCommand cmd = new SqlCommand(query, conn);
+            cmd.Parameters.AddWithValue("@NamaHewan", namaHewan);
+            cmd.Parameters.AddWithValue("@Jenis", jenis);
+            cmd.Parameters.AddWithValue("@PemilikID", pemilikId);
+            return (int)cmd.ExecuteScalar();
+        }
 
         private int GetKamarId(SqlConnection conn, string tipeKamar)
         {
@@ -349,8 +377,8 @@ namespace PABDHotel
                         {
                             if (reader.Read())
                             {
-                                cmbNamaPemilik.SelectedItem = reader["Nama"].ToString();
-                                cmbNamaHewan.SelectedItem = reader["NamaHewan"].ToString();
+                                txtNamaPemilik.Text = reader["Nama"].ToString();
+                                txtNamaHewan.Text = reader["NamaHewan"].ToString();
                                 cmbJenisHewan.SelectedItem = reader["Jenis"].ToString();
                                 cmbTipeKamar.SelectedItem = reader["TipeKamar"].ToString();
                                 dtpCheckIn.Value = Convert.ToDateTime(reader["TanggalCheckIn"]);
@@ -363,6 +391,5 @@ namespace PABDHotel
                 }
             }
         }
-
     }
 }

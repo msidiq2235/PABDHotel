@@ -49,8 +49,8 @@
             this.btnUbah = new System.Windows.Forms.Button();
             this.btnRefresh = new System.Windows.Forms.Button();
             this.dgvTransaksi = new System.Windows.Forms.DataGridView();
-            this.cmbNamaPemilik = new System.Windows.Forms.ComboBox();
-            this.cmbNamaHewan = new System.Windows.Forms.ComboBox();
+            this.txtNamaPemilik = new System.Windows.Forms.TextBox();
+            this.txtNamaHewan = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.dgvTransaksi)).BeginInit();
             this.SuspendLayout();
             // 
@@ -246,29 +246,27 @@
             this.dgvTransaksi.TabIndex = 22;
             this.dgvTransaksi.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvTransaksi_CellClick);
             // 
-            // cmbNamaPemilik
+            // txtNamaPemilik
             // 
-            this.cmbNamaPemilik.FormattingEnabled = true;
-            this.cmbNamaPemilik.Location = new System.Drawing.Point(215, 40);
-            this.cmbNamaPemilik.Name = "cmbNamaPemilik";
-            this.cmbNamaPemilik.Size = new System.Drawing.Size(435, 24);
-            this.cmbNamaPemilik.TabIndex = 23;
+            this.txtNamaPemilik.Location = new System.Drawing.Point(215, 42);
+            this.txtNamaPemilik.Name = "txtNamaPemilik";
+            this.txtNamaPemilik.Size = new System.Drawing.Size(435, 22);
+            this.txtNamaPemilik.TabIndex = 23;
             // 
-            // cmbNamaHewan
+            // txtNamaHewan
             // 
-            this.cmbNamaHewan.FormattingEnabled = true;
-            this.cmbNamaHewan.Location = new System.Drawing.Point(215, 71);
-            this.cmbNamaHewan.Name = "cmbNamaHewan";
-            this.cmbNamaHewan.Size = new System.Drawing.Size(435, 24);
-            this.cmbNamaHewan.TabIndex = 24;
+            this.txtNamaHewan.Location = new System.Drawing.Point(215, 73);
+            this.txtNamaHewan.Name = "txtNamaHewan";
+            this.txtNamaHewan.Size = new System.Drawing.Size(435, 22);
+            this.txtNamaHewan.TabIndex = 24;
             // 
             // DataTransaksi
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(801, 513);
-            this.Controls.Add(this.cmbNamaHewan);
-            this.Controls.Add(this.cmbNamaPemilik);
+            this.Controls.Add(this.txtNamaHewan);
+            this.Controls.Add(this.txtNamaPemilik);
             this.Controls.Add(this.dgvTransaksi);
             this.Controls.Add(this.btnRefresh);
             this.Controls.Add(this.btnUbah);
@@ -322,8 +320,8 @@
         private System.Windows.Forms.Button btnUbah;
         private System.Windows.Forms.Button btnRefresh;
         private System.Windows.Forms.DataGridView dgvTransaksi;
-        private System.Windows.Forms.ComboBox cmbNamaPemilik;
-        private System.Windows.Forms.ComboBox cmbNamaHewan;
+        private System.Windows.Forms.TextBox txtNamaPemilik;
+        private System.Windows.Forms.TextBox txtNamaHewan;
     }
 }
 
