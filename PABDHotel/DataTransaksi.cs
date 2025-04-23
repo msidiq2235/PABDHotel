@@ -261,69 +261,10 @@ namespace PABDHotel
         }
 
 
-        private int GetOrCreatePemilik(SqlConnection conn, string nama)
-        {
-            // Validasi input: pastikan nama tidak kosong atau null
-            if (string.IsNullOrWhiteSpace(nama))
-            {
-                throw new ArgumentException("Nama pemilik tidak boleh kosong!");
-            }
+        
 
-            // Cek apakah pemilik dengan nama yang diberikan sudah ada
-            string query = "SELECT PemilikID FROM PemilikHewan WHERE Nama = @Nama";
-            SqlCommand cmd = new SqlCommand(query, conn);
-            cmd.Parameters.AddWithValue("@Nama", nama);
-            object result = cmd.ExecuteScalar();
 
-            // Jika ada, kembalikan PemilikID yang sudah ada
-            if (result != null)
-                return (int)result;
 
-            // Jika tidak ada, buat pemilik baru dengan data dummy
-            string noHpDummy = GenerateUniqueNoHP(conn);  // Memastikan NoHP unik
-            string emailDummy = "user_" + DateTime.Now.Ticks + "@dummy.com";  // Dummy email
-
-            query = "INSERT INTO PemilikHewan (Nama, NoHP, Email) OUTPUT INSERTED.PemilikID VALUES (@Nama, @NoHP, @Email)";
-            cmd = new SqlCommand(query, conn);
-            cmd.Parameters.AddWithValue("@Nama", nama);
-            cmd.Parameters.AddWithValue("@NoHP", noHpDummy);
-            cmd.Parameters.AddWithValue("@Email", emailDummy);
-
-            // Masukkan data baru dan kembalikan PemilikID
-            return (int)cmd.ExecuteScalar();
-        }
-
-        // Fungsi untuk menghasilkan NoHP yang unik
-        private string GenerateUniqueNoHP(SqlConnection conn)
-        {
-            // Membuat NoHP dengan GUID
-            string noHp = "000" + Guid.NewGuid().ToString("N").Substring(0, 7);  // Mengambil 7 karakter pertama dari GUID yang unik
-
-            // Memastikan keunikannya
-            string query = "SELECT COUNT(1) FROM PemilikHewan WHERE NoHP = @NoHP";
-            SqlCommand cmd = new SqlCommand(query, conn);
-            cmd.Parameters.AddWithValue("@NoHP", noHp);
-            int count = (int)cmd.ExecuteScalar();
-
-            if (count > 0)
-            {
-                // Jika sudah ada, coba lagi dengan GUID baru
-                return GenerateUniqueNoHP(conn);
-            }
-
-            return noHp;
-        }
-
-        private int InsertHewan(SqlConnection conn, string namaHewan, string jenis, int pemilikId)
-        {
-            string query = @"INSERT INTO Hewan (NamaHewan, Jenis, PemilikID) OUTPUT INSERTED.HewanID 
-                             VALUES (@NamaHewan, @Jenis, @PemilikID)";
-            SqlCommand cmd = new SqlCommand(query, conn);
-            cmd.Parameters.AddWithValue("@NamaHewan", namaHewan);
-            cmd.Parameters.AddWithValue("@Jenis", jenis);
-            cmd.Parameters.AddWithValue("@PemilikID", pemilikId);
-            return (int)cmd.ExecuteScalar();
-        }
 
         private int GetKamarId(SqlConnection conn, string tipeKamar)
         {
