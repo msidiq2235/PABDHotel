@@ -258,12 +258,13 @@
             this.dgvTransaksi.RowTemplate.Height = 24;
             this.dgvTransaksi.Size = new System.Drawing.Size(706, 157);
             this.dgvTransaksi.TabIndex = 22;
+            this.dgvTransaksi.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvTransaksi_CellClick);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(788, 513);
+            this.ClientSize = new System.Drawing.Size(801, 513);
             this.Controls.Add(this.dgvTransaksi);
             this.Controls.Add(this.btnRefresh);
             this.Controls.Add(this.btnUbah);

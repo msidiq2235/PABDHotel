@@ -17,6 +17,7 @@ namespace PABDHotel
         private void Form1_Load(object sender, EventArgs e)
         {
             LoadTransaksi();
+            dgvTransaksi.CellClick += dgvTransaksi_CellClick;
         }
 
         private void ClearForm()
@@ -122,72 +123,114 @@ namespace PABDHotel
 
         private void BtnUbah_Click(object sender, EventArgs e)
         {
-            if (dgvTransaksi.SelectedRows.Count > 0)
+            if (dgvTransaksi.SelectedRows.Count > 0 &&
+                dgvTransaksi.SelectedRows[0].Cells["TransaksiID"].Value != null)
             {
+                int transaksiId = Convert.ToInt32(dgvTransaksi.SelectedRows[0].Cells["TransaksiID"].Value);
+
+                // Ambil nilai dari form
+                string namaPemilik = txtNamaPemilik.Text.Trim();
+                string namaHewan = txtNamaHewan.Text.Trim();
+                object selectedJenisHewan = cmbJenisHewan.SelectedItem;
+                object selectedTipeKamar = cmbTipeKamar.SelectedItem;
+                DateTime checkIn = dtpCheckIn.Value;
+                DateTime checkOut = dtpCheckOut.Value;
+                string namaFasilitas = txtFasilitas.Text.Trim();
+                decimal hargaFasilitas = string.IsNullOrEmpty(txtHargaFasilitas.Text) ? 0 : Convert.ToDecimal(txtHargaFasilitas.Text);
+
+                // Validasi isian
+                if (string.IsNullOrWhiteSpace(namaPemilik) ||
+                    string.IsNullOrWhiteSpace(namaHewan) ||
+                    selectedJenisHewan == null ||
+                    selectedTipeKamar == null)
+                {
+                    MessageBox.Show("Harap isi semua data!");
+                    return;
+                }
+
+                string jenisHewan = selectedJenisHewan.ToString();
+                string tipeKamar = selectedTipeKamar.ToString();
+
+                // Validasi tanggal
+                if (checkIn.Date > checkOut.Date)
+                {
+                    MessageBox.Show("Tanggal check-in tidak boleh setelah tanggal check-out.");
+                    return;
+                }
+
                 try
                 {
-                    int transaksiId = Convert.ToInt32(dgvTransaksi.SelectedRows[0].Cells["TransaksiID"].Value);
                     using (SqlConnection conn = new SqlConnection(connectionString))
                     {
                         conn.Open();
 
-                        // Ambil data dari form
-                        string namaPemilik = txtNamaPemilik.Text.Trim();
-                        string namaHewan = txtNamaHewan.Text.Trim();
-                        string jenis = cmbJenisHewan.Text;
-                        string tipeKamar = cmbTipeKamar.Text;
-                        DateTime checkIn = dtpCheckIn.Value;
-                        DateTime checkOut = dtpCheckOut.Value;
-                        string fasilitas = txtFasilitas.Text.Trim();
-                        decimal hargaFasilitas = string.IsNullOrEmpty(txtHargaFasilitas.Text) ? 0 : Convert.ToDecimal(txtHargaFasilitas.Text);
+                        // Cek/Insert pemilik
+                        int pemilikId = GetOrCreatePemilik(conn, namaPemilik);
+
+                        // Cek/Insert hewan
+                        int hewanId = InsertHewan(conn, namaHewan, jenisHewan, pemilikId);
+
+                        // Ambil ID kamar
                         int kamarId = GetKamarId(conn, tipeKamar);
+
+                        // Hitung total biaya
                         decimal hargaKamar = GetHargaKamar(conn, kamarId);
                         int totalHari = (checkOut - checkIn).Days;
                         decimal totalBiaya = (hargaKamar * totalHari) + hargaFasilitas;
 
                         // Update transaksi
                         string query = @"
-                            UPDATE Transaksi
-                            SET TanggalCheckIn = @CheckIn, TanggalCheckOut = @CheckOut,
-                                NamaFasilitas = @Fasilitas, HargaFasilitas = @HargaFasilitas, TotalBiaya = @TotalBiaya
-                            WHERE TransaksiID = @TransaksiID";
+                    UPDATE Transaksi
+                    SET PemilikID = @PemilikID,
+                        HewanID = @HewanID,
+                        KamarID = @KamarID,
+                        TanggalCheckIn = @CheckIn,
+                        TanggalCheckOut = @CheckOut,
+                        NamaFasilitas = @Fasilitas,
+                        HargaFasilitas = @HargaFasilitas,
+                        TotalBiaya = @TotalBiaya
+                    WHERE TransaksiID = @TransaksiID";
 
                         using (SqlCommand cmd = new SqlCommand(query, conn))
                         {
-                            cmd.Parameters.AddWithValue("@TransaksiID", transaksiId);
+                            cmd.Parameters.AddWithValue("@PemilikID", pemilikId);
+                            cmd.Parameters.AddWithValue("@HewanID", hewanId);
+                            cmd.Parameters.AddWithValue("@KamarID", kamarId);
                             cmd.Parameters.AddWithValue("@CheckIn", checkIn);
                             cmd.Parameters.AddWithValue("@CheckOut", checkOut);
-                            cmd.Parameters.AddWithValue("@Fasilitas", string.IsNullOrWhiteSpace(fasilitas) ? DBNull.Value : (object)fasilitas);
+                            cmd.Parameters.AddWithValue("@Fasilitas", string.IsNullOrWhiteSpace(namaFasilitas) ? DBNull.Value : (object)namaFasilitas);
                             cmd.Parameters.AddWithValue("@HargaFasilitas", hargaFasilitas);
                             cmd.Parameters.AddWithValue("@TotalBiaya", totalBiaya);
+                            cmd.Parameters.AddWithValue("@TransaksiID", transaksiId);
 
                             cmd.ExecuteNonQuery();
-                            MessageBox.Show("Transaksi berhasil diubah.");
-                            LoadTransaksi();
-                            ClearForm();
                         }
                     }
+
+                    MessageBox.Show("Transaksi berhasil diubah.");
+                    LoadTransaksi();
+                    ClearForm();
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("Error: " + ex.Message);
+                    MessageBox.Show("Error saat ubah data: " + ex.Message);
                 }
             }
             else
             {
-                MessageBox.Show("Silakan pilih transaksi yang ingin diubah.");
+                MessageBox.Show("Pilih transaksi yang ingin diubah!");
             }
         }
+
+
 
         private void BtnRefresh_Click(object sender, EventArgs e)
         {
             LoadTransaksi();
         }
 
-        // Fungsi-fungsi lainnya seperti GetOrCreatePemilik, InsertHewan, dll, tetap seperti sebelumnya.
 
-
-private int GetOrCreatePemilik(SqlConnection conn, string nama)
+        private int GetOrCreatePemilik(SqlConnection conn, string nama)
         {
             // Validasi input: pastikan nama tidak kosong atau null
             if (string.IsNullOrWhiteSpace(nama))
@@ -303,5 +346,51 @@ private int GetOrCreatePemilik(SqlConnection conn, string nama)
                 MessageBox.Show("Silakan pilih transaksi yang ingin dihapus.");
             }
         }
+
+        private void dgvTransaksi_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex >= 0)  // Pastikan baris yang diklik valid
+            {
+                DataGridViewRow row = dgvTransaksi.Rows[e.RowIndex];
+
+                // Ambil TransaksiID dari baris yang dipilih
+                int transaksiId = Convert.ToInt32(row.Cells["TransaksiID"].Value);
+
+                // Ambil data dari database berdasarkan TransaksiID
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    conn.Open();
+                    string query = @"
+                SELECT t.TransaksiID, p.Nama, h.NamaHewan, h.Jenis,
+                       k.TipeKamar, t.TanggalCheckIn, t.TanggalCheckOut,
+                       t.NamaFasilitas, t.HargaFasilitas
+                FROM Transaksi t
+                JOIN PemilikHewan p ON t.PemilikID = p.PemilikID
+                JOIN Hewan h ON t.HewanID = h.HewanID
+                JOIN Kamar k ON t.KamarID = k.KamarID
+                WHERE t.TransaksiID = @TransaksiID";
+
+                    using (SqlCommand cmd = new SqlCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@TransaksiID", transaksiId);
+                        using (SqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                txtNamaPemilik.Text = reader["Nama"].ToString();
+                                txtNamaHewan.Text = reader["NamaHewan"].ToString();
+                                cmbJenisHewan.SelectedItem = reader["Jenis"].ToString();
+                                cmbTipeKamar.SelectedItem = reader["TipeKamar"].ToString();
+                                dtpCheckIn.Value = Convert.ToDateTime(reader["TanggalCheckIn"]);
+                                dtpCheckOut.Value = Convert.ToDateTime(reader["TanggalCheckOut"]);
+                                txtFasilitas.Text = reader["NamaFasilitas"] == DBNull.Value ? "" : reader["NamaFasilitas"].ToString();
+                                txtHargaFasilitas.Text = reader["HargaFasilitas"] == DBNull.Value ? "" : reader["HargaFasilitas"].ToString();
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
     }
 }
