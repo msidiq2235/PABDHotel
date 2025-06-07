@@ -79,7 +79,7 @@
             this.btnUbah.TabIndex = 3;
             this.btnUbah.Text = "Ubah";
             this.btnUbah.UseVisualStyleBackColor = true;
-            this.btnUbah.Click += new System.EventHandler(this.btnHapus_Click);
+            this.btnUbah.Click += new System.EventHandler(this.btnUbah_Click);
             // 
             // btnRefresh
             // 

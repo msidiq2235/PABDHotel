@@ -102,10 +102,11 @@
             // 
             // txtNoHP
             // 
-            this.txtNoHP.Location = new System.Drawing.Point(192, 69);
+            this.txtNoHP.Location = new System.Drawing.Point(192, 74);
             this.txtNoHP.Name = "txtNoHP";
             this.txtNoHP.Size = new System.Drawing.Size(459, 22);
             this.txtNoHP.TabIndex = 6;
+            this.txtNoHP.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtNoHP_KeyPress);
             // 
             // txtNama
             // 
@@ -159,6 +160,7 @@
             this.Controls.Add(this.btnTambah);
             this.Name = "DataPemilik";
             this.Text = "DataPemilik";
+            this.Load += new System.EventHandler(this.DataPemilik_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dgvPemilik)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();

@@ -34,5 +34,30 @@ namespace PABDHotel
             DataTransaksi transaksiForm = new DataTransaksi();
             transaksiForm.ShowDialog();
         }
+
+        private void btnLaporanPemilik_Click(object sender, EventArgs e)
+        {
+            FormLaporanPemilik frm = new FormLaporanPemilik();
+            frm.Show();
+        }
+
+        private void btnLaporanHewan_Click(object sender, EventArgs e)
+        {
+            FormLaporanHewan frm = new FormLaporanHewan();
+            frm.Show();
+        }
+
+        private void btnLaporanKamar_Click(object sender, EventArgs e)
+        {
+            FormLaporanKamar frm = new FormLaporanKamar();
+            frm.Show();
+        }
+
+        private void btnLaporanTransaksi_Click(object sender, EventArgs e)
+        {
+            FormLaporanTransaksi frm = new FormLaporanTransaksi();
+            frm.Show();
+
+        }
     }
 }

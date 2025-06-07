@@ -164,6 +164,7 @@
             this.Controls.Add(this.dgvHewan);
             this.Name = "DataHewan";
             this.Text = "DataHewan";
+            this.Load += new System.EventHandler(this.DataHewan_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dgvHewan)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();

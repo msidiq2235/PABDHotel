@@ -36,6 +36,10 @@
             this.btnDataKamar = new System.Windows.Forms.Button();
             this.btnDataTransaksi = new System.Windows.Forms.Button();
             this.btnDataPemilik = new System.Windows.Forms.Button();
+            this.btnLaporanPemilik = new System.Windows.Forms.Button();
+            this.btnLaporanHewan = new System.Windows.Forms.Button();
+            this.btnLaporanKamar = new System.Windows.Forms.Button();
+            this.btnLaporanTransaksi = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // label1
@@ -114,11 +118,55 @@
             this.btnDataPemilik.UseVisualStyleBackColor = true;
             this.btnDataPemilik.Click += new System.EventHandler(this.btnPemilikHewan_Click);
             // 
+            // btnLaporanPemilik
+            // 
+            this.btnLaporanPemilik.Location = new System.Drawing.Point(46, 372);
+            this.btnLaporanPemilik.Name = "btnLaporanPemilik";
+            this.btnLaporanPemilik.Size = new System.Drawing.Size(134, 23);
+            this.btnLaporanPemilik.TabIndex = 9;
+            this.btnLaporanPemilik.Text = "Laporan Pemilik";
+            this.btnLaporanPemilik.UseVisualStyleBackColor = true;
+            this.btnLaporanPemilik.Click += new System.EventHandler(this.btnLaporanPemilik_Click);
+            // 
+            // btnLaporanHewan
+            // 
+            this.btnLaporanHewan.Location = new System.Drawing.Point(224, 371);
+            this.btnLaporanHewan.Name = "btnLaporanHewan";
+            this.btnLaporanHewan.Size = new System.Drawing.Size(128, 23);
+            this.btnLaporanHewan.TabIndex = 10;
+            this.btnLaporanHewan.Text = "Laporan Hewan";
+            this.btnLaporanHewan.UseVisualStyleBackColor = true;
+            this.btnLaporanHewan.Click += new System.EventHandler(this.btnLaporanHewan_Click);
+            // 
+            // btnLaporanKamar
+            // 
+            this.btnLaporanKamar.Location = new System.Drawing.Point(408, 372);
+            this.btnLaporanKamar.Name = "btnLaporanKamar";
+            this.btnLaporanKamar.Size = new System.Drawing.Size(144, 23);
+            this.btnLaporanKamar.TabIndex = 11;
+            this.btnLaporanKamar.Text = "Laporan Kamar";
+            this.btnLaporanKamar.UseVisualStyleBackColor = true;
+            this.btnLaporanKamar.Click += new System.EventHandler(this.btnLaporanKamar_Click);
+            // 
+            // btnLaporanTransaksi
+            // 
+            this.btnLaporanTransaksi.Location = new System.Drawing.Point(610, 371);
+            this.btnLaporanTransaksi.Name = "btnLaporanTransaksi";
+            this.btnLaporanTransaksi.Size = new System.Drawing.Size(137, 23);
+            this.btnLaporanTransaksi.TabIndex = 12;
+            this.btnLaporanTransaksi.Text = "Laporan Transaksi";
+            this.btnLaporanTransaksi.UseVisualStyleBackColor = true;
+            this.btnLaporanTransaksi.Click += new System.EventHandler(this.btnLaporanTransaksi_Click);
+            // 
             // menu
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.btnLaporanTransaksi);
+            this.Controls.Add(this.btnLaporanKamar);
+            this.Controls.Add(this.btnLaporanHewan);
+            this.Controls.Add(this.btnLaporanPemilik);
             this.Controls.Add(this.btnDataPemilik);
             this.Controls.Add(this.btnDataTransaksi);
             this.Controls.Add(this.btnDataKamar);
@@ -144,5 +192,9 @@
         private System.Windows.Forms.Button btnDataKamar;
         private System.Windows.Forms.Button btnDataTransaksi;
         private System.Windows.Forms.Button btnDataPemilik;
+        private System.Windows.Forms.Button btnLaporanPemilik;
+        private System.Windows.Forms.Button btnLaporanHewan;
+        private System.Windows.Forms.Button btnLaporanKamar;
+        private System.Windows.Forms.Button btnLaporanTransaksi;
     }
 }

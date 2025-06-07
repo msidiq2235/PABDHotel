@@ -14,380 +14,244 @@ namespace PABDHotel
             InitializeComponent();
         }
 
-        private void Form1_Load(object sender, EventArgs e)
+        private void DataTransaksi_Load(object sender, EventArgs e)
         {
+            // Memuat semua data saat form pertama kali dibuka
+            LoadComboBoxes();
             LoadTransaksi();
-            dgvTransaksi.CellClick += dgvTransaksi_CellClick;
         }
 
-        private void ClearForm()
+        private void LoadComboBoxes()
         {
-            txtNamaPemilik.Clear();
-            txtNamaHewan.Clear();
-            cmbJenisHewan.SelectedIndex = -1;
-            cmbTipeKamar.SelectedIndex = -1;
-            dtpCheckIn.Value = DateTime.Now;
-            dtpCheckOut.Value = DateTime.Now;
-            txtFasilitas.Clear();
-            txtHargaFasilitas.Clear();
-            txtTotalBiaya.Text = "";
+            try
+            {
+                // 1. Memuat data Pemilik dari Cache dan mendekripsinya
+                DataTable dtPemilikFromCache = AppCache.GetPemilikHewan();
+                DataTable dtPemilikDisplay = dtPemilikFromCache.Clone();
+                // Pastikan kolom siap menampung string hasil dekripsi
+                dtPemilikDisplay.Columns["NoHP"].DataType = typeof(string);
+                dtPemilikDisplay.Columns["Email"].DataType = typeof(string);
 
-            txtNamaPemilik.Focus();
+                foreach (DataRow row in dtPemilikFromCache.Rows)
+                {
+                    DataRow newRow = dtPemilikDisplay.NewRow();
+                    newRow["PemilikID"] = row["PemilikID"];
+                    newRow["Nama"] = row["Nama"];
+                    newRow["NoHP"] = EncryptionHelper.Decrypt(row["NoHP"].ToString());
+                    newRow["Email"] = EncryptionHelper.Decrypt(row["Email"].ToString());
+                    dtPemilikDisplay.Rows.Add(newRow);
+                }
+                cmbPemilik.DataSource = dtPemilikDisplay;
+                cmbPemilik.DisplayMember = "Nama";
+                cmbPemilik.ValueMember = "PemilikID";
+
+                // 2. Memuat data Hewan dari Cache
+                cmbHewan.DataSource = AppCache.GetHewan();
+                cmbHewan.DisplayMember = "NamaHewan";
+                cmbHewan.ValueMember = "HewanID";
+
+                // 3. Memuat data Kamar dari Cache
+                cmbKamar.DataSource = AppCache.GetKamar();
+                cmbKamar.DisplayMember = "TipeKamar";
+                cmbKamar.ValueMember = "KamarID";
+
+                ClearComboBoxes();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error memuat data pilihan: " + ex.Message);
+            }
         }
 
         private void LoadTransaksi()
         {
-            using (SqlConnection conn = new SqlConnection(connectionString))
+            try
             {
-                try
+                // Data transaksi selalu diambil langsung dari DB
+                DataTable dt = new DataTable();
+                using (SqlConnection conn = new SqlConnection(connectionString))
                 {
-                    conn.Open();
-                    string query = @"
-                        SELECT t.TransaksiID, ph.Nama AS NamaPemilik, h.NamaHewan, h.Jenis,
-                               k.TipeKamar, t.TanggalCheckIn, t.TanggalCheckOut,
-                               t.NamaFasilitas, t.HargaFasilitas, t.TotalBiaya
-                        FROM Transaksi t
-                        JOIN PemilikHewan ph ON t.PemilikID = ph.PemilikID
-                        JOIN Hewan h ON t.HewanID = h.HewanID
-                        JOIN Kamar k ON t.KamarID = k.KamarID";
-
-                    SqlDataAdapter da = new SqlDataAdapter(query, conn);
-                    DataTable dt = new DataTable();
-                    da.Fill(dt);
-                    dgvTransaksi.DataSource = dt;
+                    using (SqlCommand cmd = new SqlCommand("GetSemuaTransaksiDetail", conn))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        new SqlDataAdapter(cmd).Fill(dt);
+                    }
                 }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("Error: " + ex.Message);
-                }
+                dgvTransaksi.DataSource = dt;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error memuat daftar transaksi: " + ex.Message);
             }
         }
 
-        private void BtnTambah_Click(object sender, EventArgs e)
+        private void ClearForm()
         {
-            using (SqlConnection conn = new SqlConnection(connectionString))
+            ClearComboBoxes();
+            dtpCheckIn.Value = DateTime.Now;
+            dtpCheckOut.Value = DateTime.Now.AddDays(1);
+            txtFasilitas.Clear();
+            txtHargaFasilitas.Clear();
+            dgvTransaksi.ClearSelection();
+        }
+
+        private void ClearComboBoxes()
+        {
+            cmbPemilik.SelectedIndex = -1;
+            cmbHewan.SelectedIndex = -1;
+            cmbKamar.SelectedIndex = -1;
+        }
+
+        private void btnTambah_Click(object sender, EventArgs e)
+        {
+            // Validasi input
+            if (cmbPemilik.SelectedValue == null || cmbHewan.SelectedValue == null || cmbKamar.SelectedValue == null)
             {
-                try
+                MessageBox.Show("Harap pilih Pemilik, Hewan, dan Tipe Kamar.", "Input Tidak Lengkap", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+            if (dtpCheckIn.Value.Date >= dtpCheckOut.Value.Date)
+            {
+                MessageBox.Show("Tanggal Check-Out harus setelah Tanggal Check-In.", "Input Tidak Valid", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connectionString))
                 {
-                    conn.Open();
-
-                    // 1. Insert PemilikHewan jika belum ada
-                    string namaPemilik = txtNamaPemilik.Text.Trim();
-                    int pemilikId = GetOrCreatePemilik(conn, namaPemilik);
-
-                    // 2. Insert Hewan
-                    string namaHewan = txtNamaHewan.Text.Trim();
-                    string jenis = cmbJenisHewan.Text;
-                    int hewanId = InsertHewan(conn, namaHewan, jenis, pemilikId);
-
-                    // 3. Ambil ID kamar dari tipe kamar
-                    string tipeKamar = cmbTipeKamar.Text;
-                    int kamarId = GetKamarId(conn, tipeKamar);
-
-                    // 4. Hitung total biaya
-                    DateTime checkIn = dtpCheckIn.Value;
-                    DateTime checkOut = dtpCheckOut.Value;
-                    decimal hargaFasilitas = string.IsNullOrEmpty(txtHargaFasilitas.Text) ? 0 : Convert.ToDecimal(txtHargaFasilitas.Text);
-                    decimal hargaKamar = GetHargaKamar(conn, kamarId);
-                    int totalHari = (checkOut - checkIn).Days;
-                    decimal totalBiaya = (hargaKamar * totalHari) + hargaFasilitas;
-
-                    // 5. Insert ke Transaksi
-                    string query = @"
-                        INSERT INTO Transaksi (PemilikID, HewanID, KamarID, TanggalCheckIn, TanggalCheckOut, NamaFasilitas, HargaFasilitas, TotalBiaya)
-                        VALUES (@PemilikID, @HewanID, @KamarID, @CheckIn, @CheckOut, @Fasilitas, @HargaFasilitas, @TotalBiaya)";
-
-                    using (SqlCommand cmd = new SqlCommand(query, conn))
+                    using (SqlCommand cmd = new SqlCommand("AddTransaksi", conn))
                     {
-                        cmd.Parameters.AddWithValue("@PemilikID", pemilikId);
-                        cmd.Parameters.AddWithValue("@HewanID", hewanId);
-                        cmd.Parameters.AddWithValue("@KamarID", kamarId);
-                        cmd.Parameters.AddWithValue("@CheckIn", checkIn);
-                        cmd.Parameters.AddWithValue("@CheckOut", checkOut);
-                        cmd.Parameters.AddWithValue("@Fasilitas", string.IsNullOrWhiteSpace(txtFasilitas.Text) ? DBNull.Value : (object)txtFasilitas.Text);
-                        cmd.Parameters.AddWithValue("@HargaFasilitas", hargaFasilitas);
-                        cmd.Parameters.AddWithValue("@TotalBiaya", totalBiaya);
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Parameters.AddWithValue("@PemilikID", cmbPemilik.SelectedValue);
+                        cmd.Parameters.AddWithValue("@HewanID", cmbHewan.SelectedValue);
+                        cmd.Parameters.AddWithValue("@KamarID", cmbKamar.SelectedValue);
+                        cmd.Parameters.AddWithValue("@TanggalCheckIn", dtpCheckIn.Value);
+                        cmd.Parameters.AddWithValue("@TanggalCheckOut", dtpCheckOut.Value);
+                        cmd.Parameters.AddWithValue("@NamaFasilitas", string.IsNullOrWhiteSpace(txtFasilitas.Text) ? (object)DBNull.Value : txtFasilitas.Text);
 
+                        decimal hargaFasilitas = 0;
+                        decimal.TryParse(txtHargaFasilitas.Text, out hargaFasilitas);
+                        cmd.Parameters.AddWithValue("@HargaFasilitas", hargaFasilitas);
+
+                        conn.Open();
                         cmd.ExecuteNonQuery();
                         MessageBox.Show("Transaksi berhasil ditambahkan.");
-                        LoadTransaksi();
-                        ClearForm();
                     }
                 }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("Error: " + ex.Message);
-                }
+                LoadTransaksi();
+                ClearForm();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error saat menambah transaksi: " + ex.Message);
             }
         }
 
-        private void BtnUbah_Click(object sender, EventArgs e)
+        private void btnUbah_Click(object sender, EventArgs e)
         {
-            if (dgvTransaksi.SelectedRows.Count > 0 &&
-                dgvTransaksi.SelectedRows[0].Cells["TransaksiID"].Value != null)
+            if (dgvTransaksi.SelectedRows.Count == 0) { MessageBox.Show("Pilih transaksi yang ingin diubah!"); return; }
+            // Validasi lainnya
+            if (cmbPemilik.SelectedValue == null || cmbHewan.SelectedValue == null || cmbKamar.SelectedValue == null) { MessageBox.Show("Harap pilih Pemilik, Hewan, dan Tipe Kamar."); return; }
+            if (dtpCheckIn.Value.Date >= dtpCheckOut.Value.Date) { MessageBox.Show("Tanggal Check-Out harus setelah Tanggal Check-In."); return; }
+
+            try
             {
                 int transaksiId = Convert.ToInt32(dgvTransaksi.SelectedRows[0].Cells["TransaksiID"].Value);
-
-                // Ambil nilai dari form
-                string namaPemilik = txtNamaPemilik.Text.Trim();
-                string namaHewan = txtNamaHewan.Text.Trim();
-                object selectedJenisHewan = cmbJenisHewan.SelectedItem;
-                object selectedTipeKamar = cmbTipeKamar.SelectedItem;
-                DateTime checkIn = dtpCheckIn.Value;
-                DateTime checkOut = dtpCheckOut.Value;
-                string namaFasilitas = txtFasilitas.Text.Trim();
-                decimal hargaFasilitas = string.IsNullOrEmpty(txtHargaFasilitas.Text) ? 0 : Convert.ToDecimal(txtHargaFasilitas.Text);
-
-                // Validasi isian
-                if (string.IsNullOrWhiteSpace(namaPemilik) ||
-                    string.IsNullOrWhiteSpace(namaHewan) ||
-                    selectedJenisHewan == null ||
-                    selectedTipeKamar == null)
+                using (SqlConnection conn = new SqlConnection(connectionString))
                 {
-                    MessageBox.Show("Harap isi semua data!");
-                    return;
-                }
-
-                string jenisHewan = selectedJenisHewan.ToString();
-                string tipeKamar = selectedTipeKamar.ToString();
-
-                // Validasi tanggal
-                if (checkIn.Date > checkOut.Date)
-                {
-                    MessageBox.Show("Tanggal check-in tidak boleh setelah tanggal check-out.");
-                    return;
-                }
-
-                try
-                {
-                    using (SqlConnection conn = new SqlConnection(connectionString))
+                    using (SqlCommand cmd = new SqlCommand("UpdateTransaksi", conn))
                     {
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Parameters.AddWithValue("@TransaksiID", transaksiId);
+                        cmd.Parameters.AddWithValue("@PemilikID", cmbPemilik.SelectedValue);
+                        cmd.Parameters.AddWithValue("@HewanID", cmbHewan.SelectedValue);
+                        cmd.Parameters.AddWithValue("@KamarID", cmbKamar.SelectedValue);
+                        cmd.Parameters.AddWithValue("@TanggalCheckIn", dtpCheckIn.Value);
+                        cmd.Parameters.AddWithValue("@TanggalCheckOut", dtpCheckOut.Value);
+                        cmd.Parameters.AddWithValue("@NamaFasilitas", string.IsNullOrWhiteSpace(txtFasilitas.Text) ? (object)DBNull.Value : txtFasilitas.Text);
+
+                        decimal hargaFasilitas = 0;
+                        decimal.TryParse(txtHargaFasilitas.Text, out hargaFasilitas);
+                        cmd.Parameters.AddWithValue("@HargaFasilitas", hargaFasilitas);
+
                         conn.Open();
-
-                        // Cek/Insert pemilik
-                        int pemilikId = GetOrCreatePemilik(conn, namaPemilik);
-
-                        // Cek/Insert hewan
-                        int hewanId = InsertHewan(conn, namaHewan, jenisHewan, pemilikId);
-
-                        // Ambil ID kamar
-                        int kamarId = GetKamarId(conn, tipeKamar);
-
-                        // Hitung total biaya
-                        decimal hargaKamar = GetHargaKamar(conn, kamarId);
-                        int totalHari = (checkOut - checkIn).Days;
-                        decimal totalBiaya = (hargaKamar * totalHari) + hargaFasilitas;
-
-                        // Update transaksi
-                        string query = @"
-                    UPDATE Transaksi
-                    SET PemilikID = @PemilikID,
-                        HewanID = @HewanID,
-                        KamarID = @KamarID,
-                        TanggalCheckIn = @CheckIn,
-                        TanggalCheckOut = @CheckOut,
-                        NamaFasilitas = @Fasilitas,
-                        HargaFasilitas = @HargaFasilitas,
-                        TotalBiaya = @TotalBiaya
-                    WHERE TransaksiID = @TransaksiID";
-
-                        using (SqlCommand cmd = new SqlCommand(query, conn))
-                        {
-                            cmd.Parameters.AddWithValue("@PemilikID", pemilikId);
-                            cmd.Parameters.AddWithValue("@HewanID", hewanId);
-                            cmd.Parameters.AddWithValue("@KamarID", kamarId);
-                            cmd.Parameters.AddWithValue("@CheckIn", checkIn);
-                            cmd.Parameters.AddWithValue("@CheckOut", checkOut);
-                            cmd.Parameters.AddWithValue("@Fasilitas", string.IsNullOrWhiteSpace(namaFasilitas) ? DBNull.Value : (object)namaFasilitas);
-                            cmd.Parameters.AddWithValue("@HargaFasilitas", hargaFasilitas);
-                            cmd.Parameters.AddWithValue("@TotalBiaya", totalBiaya);
-                            cmd.Parameters.AddWithValue("@TransaksiID", transaksiId);
-
-                            cmd.ExecuteNonQuery();
-                        }
+                        cmd.ExecuteNonQuery();
+                        MessageBox.Show("Transaksi berhasil diubah.");
                     }
-
-                    MessageBox.Show("Transaksi berhasil diubah.");
-                    LoadTransaksi();
-                    ClearForm();
                 }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("Error saat ubah data: " + ex.Message);
-                }
+                LoadTransaksi();
+                ClearForm();
             }
-            else
+            catch (Exception ex)
             {
-                MessageBox.Show("Pilih transaksi yang ingin diubah!");
+                MessageBox.Show("Error saat mengubah transaksi: " + ex.Message);
             }
         }
 
-
-
-        private void BtnRefresh_Click(object sender, EventArgs e)
+        private void btnHapus_Click(object sender, EventArgs e)
         {
-            LoadTransaksi();
-        }
+            if (dgvTransaksi.SelectedRows.Count == 0) { MessageBox.Show("Pilih transaksi yang ingin dihapus!"); return; }
 
+            var confirm = MessageBox.Show("Yakin ingin menghapus transaksi ini?", "Konfirmasi Hapus", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            if (confirm == DialogResult.No) return;
 
-        private int GetOrCreatePemilik(SqlConnection conn, string nama)
-        {
-            // Validasi input: pastikan nama tidak kosong atau null
-            if (string.IsNullOrWhiteSpace(nama))
+            try
             {
-                throw new ArgumentException("Nama pemilik tidak boleh kosong!");
-            }
-
-            // Cek apakah pemilik dengan nama yang diberikan sudah ada
-            string query = "SELECT PemilikID FROM PemilikHewan WHERE Nama = @Nama";
-            SqlCommand cmd = new SqlCommand(query, conn);
-            cmd.Parameters.AddWithValue("@Nama", nama);
-            object result = cmd.ExecuteScalar();
-
-            // Jika ada, kembalikan PemilikID yang sudah ada
-            if (result != null)
-                return (int)result;
-
-            // Jika tidak ada, buat pemilik baru dengan data dummy
-            string noHpDummy = GenerateUniqueNoHP(conn);  // Memastikan NoHP unik
-            string emailDummy = "user_" + DateTime.Now.Ticks + "@dummy.com";  // Dummy email
-
-            query = "INSERT INTO PemilikHewan (Nama, NoHP, Email) OUTPUT INSERTED.PemilikID VALUES (@Nama, @NoHP, @Email)";
-            cmd = new SqlCommand(query, conn);
-            cmd.Parameters.AddWithValue("@Nama", nama);
-            cmd.Parameters.AddWithValue("@NoHP", noHpDummy);
-            cmd.Parameters.AddWithValue("@Email", emailDummy);
-
-            // Masukkan data baru dan kembalikan PemilikID
-            return (int)cmd.ExecuteScalar();
-        }
-
-        // Fungsi untuk menghasilkan NoHP yang unik
-        private string GenerateUniqueNoHP(SqlConnection conn)
-        {
-            // Membuat NoHP dengan GUID
-            string noHp = "000" + Guid.NewGuid().ToString("N").Substring(0, 7);  // Mengambil 7 karakter pertama dari GUID yang unik
-
-            // Memastikan keunikannya
-            string query = "SELECT COUNT(1) FROM PemilikHewan WHERE NoHP = @NoHP";
-            SqlCommand cmd = new SqlCommand(query, conn);
-            cmd.Parameters.AddWithValue("@NoHP", noHp);
-            int count = (int)cmd.ExecuteScalar();
-
-            if (count > 0)
-            {
-                // Jika sudah ada, coba lagi dengan GUID baru
-                return GenerateUniqueNoHP(conn);
-            }
-
-            return noHp;
-        }
-
-        private int InsertHewan(SqlConnection conn, string namaHewan, string jenis, int pemilikId)
-        {
-            string query = @"INSERT INTO Hewan (NamaHewan, Jenis, PemilikID) OUTPUT INSERTED.HewanID 
-                             VALUES (@NamaHewan, @Jenis, @PemilikID)";
-            SqlCommand cmd = new SqlCommand(query, conn);
-            cmd.Parameters.AddWithValue("@NamaHewan", namaHewan);
-            cmd.Parameters.AddWithValue("@Jenis", jenis);
-            cmd.Parameters.AddWithValue("@PemilikID", pemilikId);
-            return (int)cmd.ExecuteScalar();
-        }
-
-        private int GetKamarId(SqlConnection conn, string tipeKamar)
-        {
-            string query = "SELECT KamarID FROM Kamar WHERE TipeKamar = @TipeKamar";
-            SqlCommand cmd = new SqlCommand(query, conn);
-            cmd.Parameters.AddWithValue("@TipeKamar", tipeKamar);
-            return (int)cmd.ExecuteScalar();
-        }
-
-        private decimal GetHargaKamar(SqlConnection conn, int kamarId)
-        {
-            string query = "SELECT HargaPerHari FROM Kamar WHERE KamarID = @KamarID";
-            SqlCommand cmd = new SqlCommand(query, conn);
-            cmd.Parameters.AddWithValue("@KamarID", kamarId);
-            return (decimal)cmd.ExecuteScalar();
-        }
-
-        private void BtnHapus_Click(object sender, EventArgs e)
-        {
-            if (dgvTransaksi.SelectedRows.Count > 0)
-            {
-                // Ambil TransaksiID yang dipilih
                 int transaksiId = Convert.ToInt32(dgvTransaksi.SelectedRows[0].Cells["TransaksiID"].Value);
-
-                // Konfirmasi penghapusan
-                DialogResult result = MessageBox.Show("Yakin ingin menghapus transaksi ini?", "Konfirmasi", MessageBoxButtons.YesNo);
-                if (result == DialogResult.Yes)
+                using (SqlConnection conn = new SqlConnection(connectionString))
                 {
-                    using (SqlConnection conn = new SqlConnection(connectionString))
+                    using (SqlCommand cmd = new SqlCommand("DeleteTransaksi", conn))
                     {
-                        try
-                        {
-                            conn.Open();
-                            // Query untuk menghapus transaksi berdasarkan TransaksiID
-                            string query = "DELETE FROM Transaksi WHERE TransaksiID = @TransaksiID";
-                            SqlCommand cmd = new SqlCommand(query, conn);
-                            cmd.Parameters.AddWithValue("@TransaksiID", transaksiId);
-                            cmd.ExecuteNonQuery();
-                            MessageBox.Show("Transaksi berhasil dihapus.");
-                            LoadTransaksi();
-                        }
-                        catch (Exception ex)
-                        {
-                            MessageBox.Show("Error: " + ex.Message);
-                        }
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Parameters.AddWithValue("@TransaksiID", transaksiId);
+                        conn.Open();
+                        cmd.ExecuteNonQuery();
+                        MessageBox.Show("Transaksi berhasil dihapus.");
                     }
                 }
+                LoadTransaksi();
+                ClearForm();
             }
-            else
+            catch (Exception ex)
             {
-                MessageBox.Show("Silakan pilih transaksi yang ingin dihapus.");
+                MessageBox.Show("Error saat menghapus transaksi: " + ex.Message);
             }
+        }
+
+        private void btnRefresh_Click(object sender, EventArgs e)
+        {
+            // Paksa ambil data baru dari DB untuk semua cache
+            AppCache.InvalidatePemilikCache();
+            AppCache.InvalidateHewanCache();
+            AppCache.InvalidateKamarCache();
+
+            LoadComboBoxes();
+            LoadTransaksi();
+            ClearForm();
         }
 
         private void dgvTransaksi_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-            if (e.RowIndex >= 0)  // Pastikan baris yang diklik valid
+            if (e.RowIndex >= 0)
             {
-                DataGridViewRow row = dgvTransaksi.Rows[e.RowIndex];
-
-                // Ambil TransaksiID dari baris yang dipilih
-                int transaksiId = Convert.ToInt32(row.Cells["TransaksiID"].Value);
-
-                // Ambil data dari database berdasarkan TransaksiID
-                using (SqlConnection conn = new SqlConnection(connectionString))
+                try
                 {
-                    conn.Open();
-                    string query = @"
-                SELECT t.TransaksiID, p.Nama, h.NamaHewan, h.Jenis,
-                       k.TipeKamar, t.TanggalCheckIn, t.TanggalCheckOut,
-                       t.NamaFasilitas, t.HargaFasilitas
-                FROM Transaksi t
-                JOIN PemilikHewan p ON t.PemilikID = p.PemilikID
-                JOIN Hewan h ON t.HewanID = h.HewanID
-                JOIN Kamar k ON t.KamarID = k.KamarID
-                WHERE t.TransaksiID = @TransaksiID";
+                    DataGridViewRow row = dgvTransaksi.Rows[e.RowIndex];
+                    cmbPemilik.SelectedValue = row.Cells["PemilikID"].Value;
+                    cmbHewan.SelectedValue = row.Cells["HewanID"].Value;
+                    cmbKamar.SelectedValue = row.Cells["KamarID"].Value;
+                    dtpCheckIn.Value = Convert.ToDateTime(row.Cells["TanggalCheckIn"].Value);
+                    dtpCheckOut.Value = Convert.ToDateTime(row.Cells["TanggalCheckOut"].Value);
+                    txtFasilitas.Text = row.Cells["NamaFasilitas"].Value?.ToString() ?? "";
 
-                    using (SqlCommand cmd = new SqlCommand(query, conn))
-                    {
-                        cmd.Parameters.AddWithValue("@TransaksiID", transaksiId);
-                        using (SqlDataReader reader = cmd.ExecuteReader())
-                        {
-                            if (reader.Read())
-                            {
-                                txtNamaPemilik.Text = reader["Nama"].ToString();
-                                txtNamaHewan.Text = reader["NamaHewan"].ToString();
-                                cmbJenisHewan.SelectedItem = reader["Jenis"].ToString();
-                                cmbTipeKamar.SelectedItem = reader["TipeKamar"].ToString();
-                                dtpCheckIn.Value = Convert.ToDateTime(reader["TanggalCheckIn"]);
-                                dtpCheckOut.Value = Convert.ToDateTime(reader["TanggalCheckOut"]);
-                                txtFasilitas.Text = reader["NamaFasilitas"] == DBNull.Value ? "" : reader["NamaFasilitas"].ToString();
-                                txtHargaFasilitas.Text = reader["HargaFasilitas"] == DBNull.Value ? "" : reader["HargaFasilitas"].ToString();
-                            }
-                        }
-                    }
+                    // Harga fasilitas tidak bisa diambil langsung, jadi dikosongkan
+                    txtHargaFasilitas.Text = "";
+                }
+                catch (Exception)
+                {
+                    // Error bisa terjadi jika user klik saat data sedang di-refresh.
+                    // Abaikan saja agar aplikasi tidak crash.
                 }
             }
         }

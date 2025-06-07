@@ -33,8 +33,27 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.ReportViewer.Common, Version=15.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.ReportingServices.ReportViewerControl.Winforms.150.1652.0\lib\net40\Microsoft.ReportViewer.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.ReportViewer.DataVisualization, Version=15.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.ReportingServices.ReportViewerControl.Winforms.150.1652.0\lib\net40\Microsoft.ReportViewer.DataVisualization.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.ReportViewer.Design, Version=15.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.ReportingServices.ReportViewerControl.Winforms.150.1652.0\lib\net40\Microsoft.ReportViewer.Design.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.ReportViewer.ProcessingObjectModel, Version=15.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.ReportingServices.ReportViewerControl.Winforms.150.1652.0\lib\net40\Microsoft.ReportViewer.ProcessingObjectModel.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.ReportViewer.WinForms, Version=15.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.ReportingServices.ReportViewerControl.Winforms.150.1652.0\lib\net40\Microsoft.ReportViewer.WinForms.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.SqlServer.Types, Version=14.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.SqlServer.Types.14.0.314.76\lib\net40\Microsoft.SqlServer.Types.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Caching" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -46,6 +65,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AppCache.cs" />
     <Compile Include="DataHewan.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -70,6 +90,44 @@
     <Compile Include="DataTransaksi.Designer.cs">
       <DependentUpon>DataTransaksi.cs</DependentUpon>
     </Compile>
+    <Compile Include="EncryptionHelper.cs" />
+    <Compile Include="FormLaporanHewan.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormLaporanHewan.Designer.cs">
+      <DependentUpon>FormLaporanHewan.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormLaporanKamar.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormLaporanKamar.Designer.cs">
+      <DependentUpon>FormLaporanKamar.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormLaporanPemilik.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormLaporanPemilik.Designer.cs">
+      <DependentUpon>FormLaporanPemilik.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormLaporanTransaksi.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormLaporanTransaksi.Designer.cs">
+      <DependentUpon>FormLaporanTransaksi.cs</DependentUpon>
+    </Compile>
+    <Compile Include="HotelHewanPeliharaanKuanDataSet.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>HotelHewanPeliharaanKuanDataSet.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="LaporanDataSet.cs">
+      <DependentUpon>LaporanDataSet.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="LaporanDataSet.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>LaporanDataSet.xsd</DependentUpon>
+    </Compile>
     <Compile Include="menu.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -78,6 +136,7 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SqlServerTypes\Loader.cs" />
     <EmbeddedResource Include="DataHewan.resx">
       <DependentUpon>DataHewan.cs</DependentUpon>
     </EmbeddedResource>
@@ -90,6 +149,22 @@
     <EmbeddedResource Include="DataTransaksi.resx">
       <DependentUpon>DataTransaksi.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="FormLaporanHewan.resx">
+      <DependentUpon>FormLaporanHewan.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormLaporanKamar.resx">
+      <DependentUpon>FormLaporanKamar.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormLaporanPemilik.resx">
+      <DependentUpon>FormLaporanPemilik.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormLaporanTransaksi.resx">
+      <DependentUpon>FormLaporanTransaksi.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="LaporanHewan.rdlc" />
+    <EmbeddedResource Include="LaporanKamar.rdlc" />
+    <EmbeddedResource Include="LaporanPemilik.rdlc" />
+    <EmbeddedResource Include="LaporanTransaksi.rdlc" />
     <EmbeddedResource Include="menu.resx">
       <DependentUpon>menu.cs</DependentUpon>
     </EmbeddedResource>
@@ -102,6 +177,29 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <None Include="HotelHewanPeliharaanKuanDataSet.xsc">
+      <DependentUpon>HotelHewanPeliharaanKuanDataSet.xsd</DependentUpon>
+    </None>
+    <None Include="HotelHewanPeliharaanKuanDataSet.xsd">
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>HotelHewanPeliharaanKuanDataSet.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="HotelHewanPeliharaanKuanDataSet.xss">
+      <DependentUpon>HotelHewanPeliharaanKuanDataSet.xsd</DependentUpon>
+    </None>
+    <None Include="LaporanDataSet.xsc">
+      <DependentUpon>LaporanDataSet.xsd</DependentUpon>
+    </None>
+    <None Include="LaporanDataSet.xsd">
+      <SubType>Designer</SubType>
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>LaporanDataSet.Designer.cs</LastGenOutput>
+    </None>
+    <None Include="LaporanDataSet.xss">
+      <DependentUpon>LaporanDataSet.xsd</DependentUpon>
+    </None>
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -114,6 +212,21 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="SqlServerTypes\readme.htm" />
+    <Content Include="SqlServerTypes\x64\msvcr120.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SqlServerTypes\x64\SqlServerSpatial140.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SqlServerTypes\x86\msvcr120.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SqlServerTypes\x86\SqlServerSpatial140.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

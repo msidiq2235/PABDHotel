@@ -19,43 +19,65 @@ namespace PABDHotel
             LoadKamarData();
         }
 
-        // Load data kamar ke DataGridView
         private void LoadKamarData()
         {
-            using (SqlConnection conn = new SqlConnection(connectionString))
+            try
             {
-                string query = "SELECT KamarID, TipeKamar, HargaPerHari FROM Kamar";
-                SqlDataAdapter da = new SqlDataAdapter(query, conn);
-                DataTable dt = new DataTable();
-                da.Fill(dt);
-                dgvKamar.DataSource = dt;
+                // Mengambil data dari cache untuk performa lebih baik
+                dgvKamar.DataSource = AppCache.GetKamar();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error memuat data kamar: " + ex.Message);
             }
         }
 
-        // Tambah kamar
+        private void ClearForm()
+        {
+            cmbTipeKamar.SelectedIndex = -1;
+            txtHargaPerHari.Clear();
+            dgvKamar.ClearSelection();
+        }
+
         private void btnTambah_Click(object sender, EventArgs e)
         {
-            string tipeKamar = cmbTipeKamar.Text;
-            decimal hargaPerHari;
-            if (string.IsNullOrWhiteSpace(tipeKamar) || !decimal.TryParse(txtHargaPerHari.Text, out hargaPerHari))
+            // Validasi input
+            if (cmbTipeKamar.SelectedIndex == -1)
             {
-                MessageBox.Show("Harap isi semua data dengan benar.");
+                MessageBox.Show("Silakan pilih tipe kamar.", "Input Tidak Lengkap", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+            if (string.IsNullOrWhiteSpace(txtHargaPerHari.Text) || !decimal.TryParse(txtHargaPerHari.Text, out decimal harga))
+            {
+                MessageBox.Show("Harga per hari harus diisi dengan angka yang valid.", "Input Tidak Valid", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
-            using (SqlConnection conn = new SqlConnection(connectionString))
+            try
             {
-                string query = "INSERT INTO Kamar (TipeKamar, HargaPerHari) VALUES (@TipeKamar, @HargaPerHari)";
-                SqlCommand cmd = new SqlCommand(query, conn);
-                cmd.Parameters.AddWithValue("@TipeKamar", tipeKamar);
-                cmd.Parameters.AddWithValue("@HargaPerHari", hargaPerHari);
-                conn.Open();
-                cmd.ExecuteNonQuery();
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    // Menggunakan Stored Procedure AddKamar
+                    using (SqlCommand cmd = new SqlCommand("AddKamar", conn))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Parameters.AddWithValue("@TipeKamar", cmbTipeKamar.Text);
+                        cmd.Parameters.AddWithValue("@HargaPerHari", harga);
+                        conn.Open();
+                        cmd.ExecuteNonQuery();
+                        MessageBox.Show("Data kamar berhasil ditambahkan.");
+                    }
+                }
+                AppCache.InvalidateKamarCache(); // Hapus cache setelah perubahan
+                LoadKamarData();
+                ClearForm();
             }
-            LoadKamarData();
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error menambah data: " + ex.Message);
+            }
         }
 
-        // Ubah kamar
         private void btnUbah_Click(object sender, EventArgs e)
         {
             if (dgvKamar.SelectedRows.Count == 0)
@@ -64,29 +86,45 @@ namespace PABDHotel
                 return;
             }
 
-            int kamarId = Convert.ToInt32(dgvKamar.SelectedRows[0].Cells["KamarID"].Value);
-            string tipeKamar = cmbTipeKamar.Text;
-            decimal hargaPerHari;
-            if (string.IsNullOrWhiteSpace(tipeKamar) || !decimal.TryParse(txtHargaPerHari.Text, out hargaPerHari))
+            // Validasi input
+            if (cmbTipeKamar.SelectedIndex == -1)
             {
-                MessageBox.Show("Harap isi semua data dengan benar.");
+                MessageBox.Show("Silakan pilih tipe kamar.", "Input Tidak Lengkap", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+            if (string.IsNullOrWhiteSpace(txtHargaPerHari.Text) || !decimal.TryParse(txtHargaPerHari.Text, out decimal harga))
+            {
+                MessageBox.Show("Harga per hari harus diisi dengan angka yang valid.", "Input Tidak Valid", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
-            using (SqlConnection conn = new SqlConnection(connectionString))
+            try
             {
-                string query = "UPDATE Kamar SET TipeKamar = @TipeKamar, HargaPerHari = @HargaPerHari WHERE KamarID = @KamarID";
-                SqlCommand cmd = new SqlCommand(query, conn);
-                cmd.Parameters.AddWithValue("@TipeKamar", tipeKamar);
-                cmd.Parameters.AddWithValue("@HargaPerHari", hargaPerHari);
-                cmd.Parameters.AddWithValue("@KamarID", kamarId);
-                conn.Open();
-                cmd.ExecuteNonQuery();
+                int kamarId = Convert.ToInt32(dgvKamar.SelectedRows[0].Cells["KamarID"].Value);
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    // Menggunakan Stored Procedure UpdateKamar
+                    using (SqlCommand cmd = new SqlCommand("UpdateKamar", conn))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Parameters.AddWithValue("@KamarID", kamarId);
+                        cmd.Parameters.AddWithValue("@TipeKamar", cmbTipeKamar.Text);
+                        cmd.Parameters.AddWithValue("@HargaPerHari", harga);
+                        conn.Open();
+                        cmd.ExecuteNonQuery();
+                        MessageBox.Show("Data kamar berhasil diubah.");
+                    }
+                }
+                AppCache.InvalidateKamarCache(); // Hapus cache setelah perubahan
+                LoadKamarData();
+                ClearForm();
             }
-            LoadKamarData();
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error mengubah data: " + ex.Message);
+            }
         }
 
-        // Hapus kamar
         private void btnHapus_Click(object sender, EventArgs e)
         {
             if (dgvKamar.SelectedRows.Count == 0)
@@ -95,38 +133,60 @@ namespace PABDHotel
                 return;
             }
 
-            int kamarId = Convert.ToInt32(dgvKamar.SelectedRows[0].Cells["KamarID"].Value);
+            var confirm = MessageBox.Show("Yakin ingin menghapus kamar ini?", "Konfirmasi Hapus", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            if (confirm == DialogResult.No) return;
 
-            using (SqlConnection conn = new SqlConnection(connectionString))
+            try
             {
-                string query = "DELETE FROM Kamar WHERE KamarID = @KamarID";
-                SqlCommand cmd = new SqlCommand(query, conn);
-                cmd.Parameters.AddWithValue("@KamarID", kamarId);
-                conn.Open();
-                cmd.ExecuteNonQuery();
+                int kamarId = Convert.ToInt32(dgvKamar.SelectedRows[0].Cells["KamarID"].Value);
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    // Menggunakan Stored Procedure DeleteKamar
+                    using (SqlCommand cmd = new SqlCommand("DeleteKamar", conn))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Parameters.AddWithValue("@KamarID", kamarId);
+                        conn.Open();
+                        cmd.ExecuteNonQuery();
+                        MessageBox.Show("Data kamar berhasil dihapus.");
+                    }
+                }
+                AppCache.InvalidateKamarCache(); // Hapus cache setelah perubahan
+                LoadKamarData();
+                ClearForm();
             }
-            LoadKamarData();
+            catch (SqlException ex)
+            {
+                if (ex.Number == 547)
+                {
+                    MessageBox.Show("Gagal menghapus. Kamar ini sedang digunakan dalam transaksi.", "Operasi Ditolak", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+                else
+                {
+                    MessageBox.Show("Error Database: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error menghapus data: " + ex.Message);
+            }
         }
 
-        // Refresh data kamar
         private void btnRefresh_Click(object sender, EventArgs e)
         {
+            AppCache.InvalidateKamarCache();
             LoadKamarData();
+            ClearForm();
         }
 
-        // Event handler untuk klik pada baris DataGridView
         private void dgvKamar_CellClick(object sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex >= 0)
             {
-                // Ambil data dari baris yang dipilih
                 DataGridViewRow row = dgvKamar.Rows[e.RowIndex];
-
-                // Isi ComboBox dan TextBox dengan data dari baris yang dipilih
                 cmbTipeKamar.SelectedItem = row.Cells["TipeKamar"].Value.ToString();
                 txtHargaPerHari.Text = row.Cells["HargaPerHari"].Value.ToString();
             }
         }
-
     }
 }

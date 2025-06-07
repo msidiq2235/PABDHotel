@@ -36,21 +36,19 @@
             this.CheckOut = new System.Windows.Forms.Label();
             this.Fasilitas = new System.Windows.Forms.Label();
             this.HargaFasilitas = new System.Windows.Forms.Label();
-            this.TotalBiaya = new System.Windows.Forms.Label();
             this.cmbJenisHewan = new System.Windows.Forms.ComboBox();
-            this.cmbTipeKamar = new System.Windows.Forms.ComboBox();
             this.dtpCheckIn = new System.Windows.Forms.DateTimePicker();
             this.dtpCheckOut = new System.Windows.Forms.DateTimePicker();
             this.txtFasilitas = new System.Windows.Forms.TextBox();
             this.txtHargaFasilitas = new System.Windows.Forms.TextBox();
-            this.txtTotalBiaya = new System.Windows.Forms.TextBox();
             this.btnTambah = new System.Windows.Forms.Button();
             this.btnHapus = new System.Windows.Forms.Button();
             this.btnUbah = new System.Windows.Forms.Button();
             this.btnRefresh = new System.Windows.Forms.Button();
             this.dgvTransaksi = new System.Windows.Forms.DataGridView();
-            this.txtNamaPemilik = new System.Windows.Forms.TextBox();
-            this.txtNamaHewan = new System.Windows.Forms.TextBox();
+            this.cmbPemilik = new System.Windows.Forms.ComboBox();
+            this.cmbHewan = new System.Windows.Forms.ComboBox();
+            this.cmbKamar = new System.Windows.Forms.ComboBox();
             ((System.ComponentModel.ISupportInitialize)(this.dgvTransaksi)).BeginInit();
             this.SuspendLayout();
             // 
@@ -126,15 +124,6 @@
             this.HargaFasilitas.TabIndex = 7;
             this.HargaFasilitas.Text = "Harga Fasilitas";
             // 
-            // TotalBiaya
-            // 
-            this.TotalBiaya.AutoSize = true;
-            this.TotalBiaya.Location = new System.Drawing.Point(61, 293);
-            this.TotalBiaya.Name = "TotalBiaya";
-            this.TotalBiaya.Size = new System.Drawing.Size(76, 16);
-            this.TotalBiaya.TabIndex = 8;
-            this.TotalBiaya.Text = "Total Biaya";
-            // 
             // cmbJenisHewan
             // 
             this.cmbJenisHewan.FormattingEnabled = true;
@@ -145,18 +134,6 @@
             this.cmbJenisHewan.Name = "cmbJenisHewan";
             this.cmbJenisHewan.Size = new System.Drawing.Size(435, 24);
             this.cmbJenisHewan.TabIndex = 11;
-            // 
-            // cmbTipeKamar
-            // 
-            this.cmbTipeKamar.FormattingEnabled = true;
-            this.cmbTipeKamar.Items.AddRange(new object[] {
-            "VVIP",
-            "VIP",
-            "Biasa"});
-            this.cmbTipeKamar.Location = new System.Drawing.Point(215, 136);
-            this.cmbTipeKamar.Name = "cmbTipeKamar";
-            this.cmbTipeKamar.Size = new System.Drawing.Size(435, 24);
-            this.cmbTipeKamar.TabIndex = 12;
             // 
             // dtpCheckIn
             // 
@@ -186,15 +163,6 @@
             this.txtHargaFasilitas.Size = new System.Drawing.Size(435, 22);
             this.txtHargaFasilitas.TabIndex = 16;
             // 
-            // txtTotalBiaya
-            // 
-            this.txtTotalBiaya.BackColor = System.Drawing.SystemColors.Window;
-            this.txtTotalBiaya.Location = new System.Drawing.Point(215, 287);
-            this.txtTotalBiaya.Name = "txtTotalBiaya";
-            this.txtTotalBiaya.ReadOnly = true;
-            this.txtTotalBiaya.Size = new System.Drawing.Size(435, 22);
-            this.txtTotalBiaya.TabIndex = 17;
-            // 
             // btnTambah
             // 
             this.btnTambah.Location = new System.Drawing.Point(687, 73);
@@ -203,7 +171,7 @@
             this.btnTambah.TabIndex = 18;
             this.btnTambah.Text = "Tambah";
             this.btnTambah.UseVisualStyleBackColor = true;
-            this.btnTambah.Click += new System.EventHandler(this.BtnTambah_Click);
+            this.btnTambah.Click += new System.EventHandler(this.btnTambah_Click);
             // 
             // btnHapus
             // 
@@ -213,7 +181,7 @@
             this.btnHapus.TabIndex = 19;
             this.btnHapus.Text = "Hapus";
             this.btnHapus.UseVisualStyleBackColor = true;
-            this.btnHapus.Click += new System.EventHandler(this.BtnHapus_Click);
+            this.btnHapus.Click += new System.EventHandler(this.btnHapus_Click);
             // 
             // btnUbah
             // 
@@ -223,7 +191,7 @@
             this.btnUbah.TabIndex = 20;
             this.btnUbah.Text = "Ubah";
             this.btnUbah.UseVisualStyleBackColor = true;
-            this.btnUbah.Click += new System.EventHandler(this.BtnUbah_Click);
+            this.btnUbah.Click += new System.EventHandler(this.btnUbah_Click);
             // 
             // btnRefresh
             // 
@@ -233,7 +201,7 @@
             this.btnRefresh.TabIndex = 21;
             this.btnRefresh.Text = "Refresh";
             this.btnRefresh.UseVisualStyleBackColor = true;
-            this.btnRefresh.Click += new System.EventHandler(this.BtnRefresh_Click);
+            this.btnRefresh.Click += new System.EventHandler(this.btnRefresh_Click);
             // 
             // dgvTransaksi
             // 
@@ -246,40 +214,48 @@
             this.dgvTransaksi.TabIndex = 22;
             this.dgvTransaksi.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvTransaksi_CellClick);
             // 
-            // txtNamaPemilik
+            // cmbPemilik
             // 
-            this.txtNamaPemilik.Location = new System.Drawing.Point(215, 42);
-            this.txtNamaPemilik.Name = "txtNamaPemilik";
-            this.txtNamaPemilik.Size = new System.Drawing.Size(435, 22);
-            this.txtNamaPemilik.TabIndex = 23;
+            this.cmbPemilik.FormattingEnabled = true;
+            this.cmbPemilik.Location = new System.Drawing.Point(215, 40);
+            this.cmbPemilik.Name = "cmbPemilik";
+            this.cmbPemilik.Size = new System.Drawing.Size(435, 24);
+            this.cmbPemilik.TabIndex = 23;
             // 
-            // txtNamaHewan
+            // cmbHewan
             // 
-            this.txtNamaHewan.Location = new System.Drawing.Point(215, 73);
-            this.txtNamaHewan.Name = "txtNamaHewan";
-            this.txtNamaHewan.Size = new System.Drawing.Size(435, 22);
-            this.txtNamaHewan.TabIndex = 24;
+            this.cmbHewan.FormattingEnabled = true;
+            this.cmbHewan.Location = new System.Drawing.Point(215, 75);
+            this.cmbHewan.Name = "cmbHewan";
+            this.cmbHewan.Size = new System.Drawing.Size(435, 24);
+            this.cmbHewan.TabIndex = 24;
+            // 
+            // cmbKamar
+            // 
+            this.cmbKamar.FormattingEnabled = true;
+            this.cmbKamar.Location = new System.Drawing.Point(215, 135);
+            this.cmbKamar.Name = "cmbKamar";
+            this.cmbKamar.Size = new System.Drawing.Size(435, 24);
+            this.cmbKamar.TabIndex = 25;
             // 
             // DataTransaksi
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(801, 513);
-            this.Controls.Add(this.txtNamaHewan);
-            this.Controls.Add(this.txtNamaPemilik);
+            this.Controls.Add(this.cmbKamar);
+            this.Controls.Add(this.cmbHewan);
+            this.Controls.Add(this.cmbPemilik);
             this.Controls.Add(this.dgvTransaksi);
             this.Controls.Add(this.btnRefresh);
             this.Controls.Add(this.btnUbah);
             this.Controls.Add(this.btnHapus);
             this.Controls.Add(this.btnTambah);
-            this.Controls.Add(this.txtTotalBiaya);
             this.Controls.Add(this.txtHargaFasilitas);
             this.Controls.Add(this.txtFasilitas);
             this.Controls.Add(this.dtpCheckOut);
             this.Controls.Add(this.dtpCheckIn);
-            this.Controls.Add(this.cmbTipeKamar);
             this.Controls.Add(this.cmbJenisHewan);
-            this.Controls.Add(this.TotalBiaya);
             this.Controls.Add(this.HargaFasilitas);
             this.Controls.Add(this.Fasilitas);
             this.Controls.Add(this.CheckOut);
@@ -290,7 +266,7 @@
             this.Controls.Add(this.PemilikID);
             this.Name = "DataTransaksi";
             this.Text = "Data Transaksi";
-            this.Load += new System.EventHandler(this.Form1_Load);
+            this.Load += new System.EventHandler(this.DataTransaksi_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dgvTransaksi)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -307,21 +283,19 @@
         private System.Windows.Forms.Label CheckOut;
         private System.Windows.Forms.Label Fasilitas;
         private System.Windows.Forms.Label HargaFasilitas;
-        private System.Windows.Forms.Label TotalBiaya;
         private System.Windows.Forms.ComboBox cmbJenisHewan;
-        private System.Windows.Forms.ComboBox cmbTipeKamar;
         private System.Windows.Forms.DateTimePicker dtpCheckIn;
         private System.Windows.Forms.DateTimePicker dtpCheckOut;
         private System.Windows.Forms.TextBox txtFasilitas;
         private System.Windows.Forms.TextBox txtHargaFasilitas;
-        private System.Windows.Forms.TextBox txtTotalBiaya;
         private System.Windows.Forms.Button btnTambah;
         private System.Windows.Forms.Button btnHapus;
         private System.Windows.Forms.Button btnUbah;
         private System.Windows.Forms.Button btnRefresh;
         private System.Windows.Forms.DataGridView dgvTransaksi;
-        private System.Windows.Forms.TextBox txtNamaPemilik;
-        private System.Windows.Forms.TextBox txtNamaHewan;
+        private System.Windows.Forms.ComboBox cmbPemilik;
+        private System.Windows.Forms.ComboBox cmbHewan;
+        private System.Windows.Forms.ComboBox cmbKamar;
     }
 }
 
