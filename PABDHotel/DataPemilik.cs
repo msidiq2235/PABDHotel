@@ -397,5 +397,10 @@ namespace PABDHotel
                 MessageBox.Show("Tidak dapat membaca file Excel. Pastikan file tidak sedang dibuka dan formatnya benar.\nError: " + ex.Message, "Error Import", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
+        private void btnKembali_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
     }
 }

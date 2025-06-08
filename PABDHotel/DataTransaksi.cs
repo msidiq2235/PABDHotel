@@ -419,6 +419,9 @@ namespace PABDHotel
             }
         }
 
-
+        private void btnKembali_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
     }
 }

@@ -36,6 +36,7 @@
             this.btnDataKamar = new System.Windows.Forms.Button();
             this.btnDataTransaksi = new System.Windows.Forms.Button();
             this.btnDataPemilik = new System.Windows.Forms.Button();
+            this.btnKeluar = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // label1
@@ -114,11 +115,22 @@
             this.btnDataPemilik.UseVisualStyleBackColor = true;
             this.btnDataPemilik.Click += new System.EventHandler(this.btnPemilikHewan_Click);
             // 
+            // btnKeluar
+            // 
+            this.btnKeluar.Location = new System.Drawing.Point(663, 397);
+            this.btnKeluar.Name = "btnKeluar";
+            this.btnKeluar.Size = new System.Drawing.Size(75, 23);
+            this.btnKeluar.TabIndex = 9;
+            this.btnKeluar.Text = "Keluar";
+            this.btnKeluar.UseVisualStyleBackColor = true;
+            this.btnKeluar.Click += new System.EventHandler(this.btnKeluar_Click);
+            // 
             // menu
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.btnKeluar);
             this.Controls.Add(this.btnDataPemilik);
             this.Controls.Add(this.btnDataTransaksi);
             this.Controls.Add(this.btnDataKamar);
@@ -144,5 +156,6 @@
         private System.Windows.Forms.Button btnDataKamar;
         private System.Windows.Forms.Button btnDataTransaksi;
         private System.Windows.Forms.Button btnDataPemilik;
+        private System.Windows.Forms.Button btnKeluar;
     }
 }

@@ -42,6 +42,7 @@
             this.btnAnalisis = new System.Windows.Forms.Button();
             this.btnReport = new System.Windows.Forms.Button();
             this.btnImport = new System.Windows.Forms.Button();
+            this.btnKembali = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dgvHewan)).BeginInit();
             this.SuspendLayout();
             // 
@@ -52,7 +53,7 @@
             this.dgvHewan.Name = "dgvHewan";
             this.dgvHewan.RowHeadersWidth = 51;
             this.dgvHewan.RowTemplate.Height = 24;
-            this.dgvHewan.Size = new System.Drawing.Size(714, 254);
+            this.dgvHewan.Size = new System.Drawing.Size(714, 222);
             this.dgvHewan.TabIndex = 0;
             this.dgvHewan.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvHewan_CellClick);
             // 
@@ -179,11 +180,22 @@
             this.btnImport.UseVisualStyleBackColor = true;
             this.btnImport.Click += new System.EventHandler(this.btnImport_Click);
             // 
+            // btnKembali
+            // 
+            this.btnKembali.Location = new System.Drawing.Point(682, 415);
+            this.btnKembali.Name = "btnKembali";
+            this.btnKembali.Size = new System.Drawing.Size(75, 23);
+            this.btnKembali.TabIndex = 14;
+            this.btnKembali.Text = "Kembali";
+            this.btnKembali.UseVisualStyleBackColor = true;
+            this.btnKembali.Click += new System.EventHandler(this.btnKembali_Click);
+            // 
             // DataHewan
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.btnKembali);
             this.Controls.Add(this.btnImport);
             this.Controls.Add(this.btnReport);
             this.Controls.Add(this.btnAnalisis);
@@ -223,5 +235,6 @@
         private System.Windows.Forms.Button btnAnalisis;
         private System.Windows.Forms.Button btnReport;
         private System.Windows.Forms.Button btnImport;
+        private System.Windows.Forms.Button btnKembali;
     }
 }

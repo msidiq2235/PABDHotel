@@ -398,5 +398,10 @@ namespace PABDHotel
                 MessageBox.Show("Gagal membaca file Excel.\nError: " + ex.Message, "Error Import");
             }
         }
+
+        private void btnKembali_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
     }
 }
