@@ -1,6 +1,8 @@
-﻿using System;
+﻿using ExcelDataReader;
+using System;
 using System.Data;
 using System.Data.SqlClient;
+using System.IO;
 using System.Windows.Forms;
 
 namespace PABDHotel
@@ -244,9 +246,12 @@ namespace PABDHotel
                     dtpCheckIn.Value = Convert.ToDateTime(row.Cells["TanggalCheckIn"].Value);
                     dtpCheckOut.Value = Convert.ToDateTime(row.Cells["TanggalCheckOut"].Value);
                     txtFasilitas.Text = row.Cells["NamaFasilitas"].Value?.ToString() ?? "";
-
-                    // Harga fasilitas tidak bisa diambil langsung, jadi dikosongkan
                     txtHargaFasilitas.Text = "";
+
+                    if (dgvTransaksi.Columns.Contains("Jenis") && row.Cells["Jenis"].Value != null)
+                    {
+                        cmbJenisHewan.Text = row.Cells["Jenis"].Value.ToString();
+                    }
                 }
                 catch (Exception)
                 {
@@ -255,5 +260,165 @@ namespace PABDHotel
                 }
             }
         }
+
+        private System.Text.StringBuilder analysisResult;
+
+        private void OnInfoMessage(object sender, SqlInfoMessageEventArgs e)
+        {
+            analysisResult.AppendLine(e.Message);
+        }
+
+        private void btnAnalisis_Click(object sender, EventArgs e)
+        {
+            // Inisialisasi StringBuilder setiap kali tombol diklik
+            analysisResult = new System.Text.StringBuilder();
+
+            // Tentukan Stored Procedure yang ingin dianalisis
+            string queryToAnalyze = "EXEC GetSemuaTransaksiDetail;";
+
+            MessageBox.Show("Memulai analisis query, mohon tunggu...", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    // Daftarkan event handler SEBELUM membuka koneksi
+                    conn.InfoMessage += OnInfoMessage;
+
+                    conn.Open();
+
+                    // Gabungkan semua perintah dalam satu string
+                    string commandText = $@"
+                    SET STATISTICS IO ON;
+                    SET STATISTICS TIME ON;
+
+                    {queryToAnalyze}
+
+                    SET STATISTICS IO OFF;
+                    SET STATISTICS TIME OFF;";
+
+                    using (SqlCommand cmd = new SqlCommand(commandText, conn))
+                    {
+                        // Gunakan ExecuteNonQuery karena kita tidak tertarik dengan hasil datanya,
+                        // hanya pesan statistiknya.
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+
+                // Tampilkan semua pesan statistik yang sudah terkumpul
+                MessageBox.Show(analysisResult.ToString(), "Hasil Analisis Query", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Gagal melakukan analisis: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void btnReport_Click(object sender, EventArgs e)
+        {
+            FormLaporanTransaksi frm = new FormLaporanTransaksi();
+            frm.Show();
+        }
+
+        private void btnImport_Click(object sender, EventArgs e)
+        {
+            using (OpenFileDialog openFileDialog = new OpenFileDialog())
+            {
+                openFileDialog.Filter = "Excel Files|*.xls;*.xlsx;*.xlsm";
+                openFileDialog.Title = "Pilih File Excel untuk Import Transaksi";
+                if (openFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    ImportDataFromExcel(openFileDialog.FileName);
+                }
+            }
+        }
+
+        private void ImportDataFromExcel(string filePath)
+        {
+            // Peringatan: Import transaksi sangat kompleks.
+            // File Excel HARUS memiliki kolom: NamaPemilik, NamaHewan, TipeKamar, TanggalCheckIn, TanggalCheckOut, NamaFasilitas, HargaFasilitas
+            int successCount = 0;
+            int failCount = 0;
+            var errors = new System.Text.StringBuilder();
+            try
+            {
+                System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
+                using (var stream = File.Open(filePath, FileMode.Open, FileAccess.Read))
+                {
+                    using (var reader = ExcelReaderFactory.CreateReader(stream))
+                    {
+                        var result = reader.AsDataSet(new ExcelDataSetConfiguration() { ConfigureDataTable = (_) => new ExcelDataTableConfiguration() { UseHeaderRow = true } });
+                        DataTable dtExcel = result.Tables[0];
+
+                        // Ambil data lookup dari cache
+                        DataTable dtPemilik = AppCache.GetPemilikHewan();
+                        DataTable dtHewan = AppCache.GetHewan();
+                        DataTable dtKamar = AppCache.GetKamar();
+
+                        foreach (DataRow row in dtExcel.Rows)
+                        {
+                            try
+                            {
+                                // Baca data dari Excel
+                                string namaPemilik = row["NamaPemilik"].ToString();
+                                string namaHewan = row["NamaHewan"].ToString();
+                                string tipeKamar = row["TipeKamar"].ToString();
+                                DateTime tglCheckIn = Convert.ToDateTime(row["TanggalCheckIn"]);
+                                DateTime tglCheckOut = Convert.ToDateTime(row["TanggalCheckOut"]);
+                                string namaFasilitas = row["NamaFasilitas"].ToString();
+                                decimal.TryParse(row["HargaFasilitas"].ToString(), out decimal hargaFasilitas);
+
+                                // --- Cari ID ---
+                                DataRow[] pemilikRows = dtPemilik.Select($"Nama = '{namaPemilik.Replace("'", "''")}'");
+                                if (pemilikRows.Length == 0) { throw new Exception($"Pemilik '{namaPemilik}' tidak ditemukan."); }
+                                int pemilikId = Convert.ToInt32(pemilikRows[0]["PemilikID"]);
+
+                                DataRow[] hewanRows = dtHewan.Select($"NamaHewan = '{namaHewan.Replace("'", "''")}' AND PemilikID = {pemilikId}");
+                                if (hewanRows.Length == 0) { throw new Exception($"Hewan '{namaHewan}' milik '{namaPemilik}' tidak ditemukan."); }
+                                int hewanId = Convert.ToInt32(hewanRows[0]["HewanID"]);
+
+                                DataRow[] kamarRows = dtKamar.Select($"TipeKamar = '{tipeKamar.Replace("'", "''")}'");
+                                if (kamarRows.Length == 0) { throw new Exception($"Tipe Kamar '{tipeKamar}' tidak ditemukan."); }
+                                int kamarId = Convert.ToInt32(kamarRows[0]["KamarID"]);
+
+                                // --- Simpan ke DB ---
+                                using (SqlConnection conn = new SqlConnection(connectionString))
+                                {
+                                    using (SqlCommand cmd = new SqlCommand("AddTransaksi", conn))
+                                    {
+                                        cmd.CommandType = CommandType.StoredProcedure;
+                                        cmd.Parameters.AddWithValue("@PemilikID", pemilikId);
+                                        cmd.Parameters.AddWithValue("@HewanID", hewanId);
+                                        cmd.Parameters.AddWithValue("@KamarID", kamarId);
+                                        cmd.Parameters.AddWithValue("@TanggalCheckIn", tglCheckIn);
+                                        cmd.Parameters.AddWithValue("@TanggalCheckOut", tglCheckOut);
+                                        cmd.Parameters.AddWithValue("@NamaFasilitas", namaFasilitas);
+                                        cmd.Parameters.AddWithValue("@HargaFasilitas", hargaFasilitas);
+                                        conn.Open();
+                                        cmd.ExecuteNonQuery();
+                                        successCount++;
+                                    }
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                failCount++;
+                                errors.AppendLine($"- Baris data gagal diproses: Error - {ex.Message}");
+                            }
+                        }
+                    }
+                }
+                string summary = $"Proses import selesai.\n\nBerhasil: {successCount} data.\nGagal: {failCount} data.";
+                if (failCount > 0) summary += "\n\nDetail Kegagalan:\n" + errors.ToString();
+                MessageBox.Show(summary, "Laporan Import");
+                LoadTransaksi(); // Refresh tabel transaksi
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Gagal membaca file Excel.\nError: " + ex.Message, "Error Import");
+            }
+        }
+
+
     }
 }

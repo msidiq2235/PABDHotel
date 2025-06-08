@@ -3,6 +3,8 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Windows.Forms;
+using ExcelDataReader;
+using System.IO;
 
 namespace PABDHotel
 {
@@ -209,6 +211,190 @@ namespace PABDHotel
             if (!char.IsDigit(e.KeyChar) && !char.IsControl(e.KeyChar))
             {
                 e.Handled = true;
+            }
+        }
+
+
+        // Variabel untuk menampung hasil analisis dari SQL Server
+        private System.Text.StringBuilder analysisResult;
+
+        // Fungsi ini akan menangkap pesan statistik (IO, Time) dari SQL Server
+        private void OnInfoMessage(object sender, SqlInfoMessageEventArgs e)
+        {
+            // Tambahkan setiap pesan ke dalam variabel analysisResult
+            analysisResult.AppendLine(e.Message);
+        }
+
+        // Event handler untuk tombol Analisis Query
+        private void btnAnalisis_Click(object sender, EventArgs e)
+        {
+            // Inisialisasi StringBuilder setiap kali tombol diklik
+            analysisResult = new System.Text.StringBuilder();
+
+            // Tentukan Stored Procedure yang ingin dianalisis
+            string queryToAnalyze = "EXEC GetSemuaPemilikHewan;";
+
+            MessageBox.Show("Memulai analisis query, mohon tunggu...", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    // Daftarkan event handler SEBELUM membuka koneksi
+                    conn.InfoMessage += OnInfoMessage;
+
+                    conn.Open();
+
+                    // Gabungkan semua perintah dalam satu string
+                    string commandText = $@"
+                    SET STATISTICS IO ON;
+                    SET STATISTICS TIME ON;
+
+                    {queryToAnalyze}
+
+                    SET STATISTICS IO OFF;
+                    SET STATISTICS TIME OFF;";
+
+                    using (SqlCommand cmd = new SqlCommand(commandText, conn))
+                    {
+                        // Gunakan ExecuteNonQuery karena kita tidak tertarik dengan hasil datanya,
+                        // hanya pesan statistiknya.
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+
+                // Tampilkan semua pesan statistik yang sudah terkumpul
+                MessageBox.Show(analysisResult.ToString(), "Hasil Analisis Query", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Gagal melakukan analisis: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void btnReport_Click(object sender, EventArgs e)
+        {
+            FormLaporanPemilik frm = new FormLaporanPemilik();
+            frm.Show();
+        }
+
+        private void btnImport_Click(object sender, EventArgs e)
+        {
+            // Buka dialog untuk memilih file Excel
+            using (OpenFileDialog openFileDialog = new OpenFileDialog())
+            {
+                openFileDialog.Filter = "Excel Files|*.xls;*.xlsx;*.xlsm";
+                openFileDialog.Title = "Pilih File Excel";
+
+                if (openFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    string filePath = openFileDialog.FileName;
+                    ImportDataFromExcel(filePath);
+                }
+            }
+        }
+
+        private void ImportDataFromExcel(string filePath)
+        {
+            int successCount = 0;
+            int failCount = 0;
+            var errors = new System.Text.StringBuilder();
+
+            try
+            {
+                // Encoding diperlukan untuk library ini
+                System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
+
+                using (var stream = File.Open(filePath, FileMode.Open, FileAccess.Read))
+                {
+                    using (var reader = ExcelReaderFactory.CreateReader(stream))
+                    {
+                        // Baca data dari Excel ke dalam DataSet
+                        var result = reader.AsDataSet(new ExcelDataSetConfiguration()
+                        {
+                            ConfigureDataTable = (_) => new ExcelDataTableConfiguration()
+                            {
+                                UseHeaderRow = true // Anggap baris pertama adalah header
+                            }
+                        });
+
+                        DataTable dt = result.Tables[0];
+                        foreach (DataRow row in dt.Rows)
+                        {
+                            try
+                            {
+                                string nama = row["Nama"].ToString();
+                                string noHp = row["NoHP"].ToString();
+                                string email = row["Email"].ToString();
+
+                                // Validasi data dari Excel
+                                if (string.IsNullOrWhiteSpace(nama) || string.IsNullOrWhiteSpace(noHp))
+                                {
+                                    failCount++;
+                                    errors.AppendLine($"- Baris untuk '{nama}' gagal: Nama dan NoHP wajib diisi.");
+                                    continue;
+                                }
+                                if (!IsNumeric(noHp))
+                                {
+                                    failCount++;
+                                    errors.AppendLine($"- Baris untuk '{nama}' gagal: NoHP harus angka.");
+                                    continue;
+                                }
+                                if (!IsValidEmail(email))
+                                {
+                                    failCount++;
+                                    errors.AppendLine($"- Baris untuk '{nama}' gagal: Format email tidak valid.");
+                                    continue;
+                                }
+
+                                // Simpan ke database menggunakan Stored Procedure
+                                using (SqlConnection conn = new SqlConnection(connectionString))
+                                {
+                                    using (SqlCommand cmd = new SqlCommand("AddPemilikHewan", conn))
+                                    {
+                                        cmd.CommandType = CommandType.StoredProcedure;
+                                        cmd.Parameters.AddWithValue("@Nama", nama);
+                                        cmd.Parameters.AddWithValue("@NoHP", EncryptionHelper.Encrypt(noHp));
+                                        cmd.Parameters.AddWithValue("@Email", EncryptionHelper.Encrypt(email));
+                                        conn.Open();
+                                        cmd.ExecuteNonQuery();
+                                        successCount++;
+                                    }
+                                }
+                            }
+                            catch (SqlException ex)
+                            {
+                                // Tangani jika ada data duplikat dari Excel
+                                failCount++;
+                                if (ex.Number == 2627 || ex.Number == 2601)
+                                    errors.AppendLine($"- Baris untuk '{row["Nama"]}' gagal: NoHP atau Email sudah ada di database.");
+                                else
+                                    errors.AppendLine($"- Baris untuk '{row["Nama"]}' gagal: Error SQL - {ex.Message}");
+                            }
+                            catch (Exception ex)
+                            {
+                                failCount++;
+                                errors.AppendLine($"- Baris untuk '{row["Nama"]}' gagal: Error - {ex.Message}");
+                            }
+                        }
+                    }
+                }
+
+                // Tampilkan laporan hasil import
+                string summary = $"Proses import selesai.\n\nBerhasil: {successCount} data.\nGagal: {failCount} data.";
+                if (failCount > 0)
+                {
+                    summary += "\n\nDetail Kegagalan:\n" + errors.ToString();
+                }
+                MessageBox.Show(summary, "Laporan Import", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                // Refresh data setelah import selesai
+                AppCache.InvalidatePemilikCache();
+                LoadData();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Tidak dapat membaca file Excel. Pastikan file tidak sedang dibuka dan formatnya benar.\nError: " + ex.Message, "Error Import", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
     }

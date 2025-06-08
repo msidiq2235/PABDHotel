@@ -37,6 +37,9 @@
             this.label2 = new System.Windows.Forms.Label();
             this.cmbTipeKamar = new System.Windows.Forms.ComboBox();
             this.txtHargaPerHari = new System.Windows.Forms.TextBox();
+            this.btnAnalisis = new System.Windows.Forms.Button();
+            this.btnReport = new System.Windows.Forms.Button();
+            this.btnImport = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dgvKamar)).BeginInit();
             this.SuspendLayout();
             // 
@@ -53,7 +56,7 @@
             // 
             // btnTambah
             // 
-            this.btnTambah.Location = new System.Drawing.Point(98, 114);
+            this.btnTambah.Location = new System.Drawing.Point(62, 128);
             this.btnTambah.Name = "btnTambah";
             this.btnTambah.Size = new System.Drawing.Size(75, 23);
             this.btnTambah.TabIndex = 1;
@@ -63,7 +66,7 @@
             // 
             // btnHapus
             // 
-            this.btnHapus.Location = new System.Drawing.Point(242, 114);
+            this.btnHapus.Location = new System.Drawing.Point(164, 128);
             this.btnHapus.Name = "btnHapus";
             this.btnHapus.Size = new System.Drawing.Size(75, 23);
             this.btnHapus.TabIndex = 2;
@@ -73,7 +76,7 @@
             // 
             // btnUbah
             // 
-            this.btnUbah.Location = new System.Drawing.Point(368, 114);
+            this.btnUbah.Location = new System.Drawing.Point(257, 128);
             this.btnUbah.Name = "btnUbah";
             this.btnUbah.Size = new System.Drawing.Size(75, 23);
             this.btnUbah.TabIndex = 3;
@@ -83,7 +86,7 @@
             // 
             // btnRefresh
             // 
-            this.btnRefresh.Location = new System.Drawing.Point(503, 114);
+            this.btnRefresh.Location = new System.Drawing.Point(357, 127);
             this.btnRefresh.Name = "btnRefresh";
             this.btnRefresh.Size = new System.Drawing.Size(75, 23);
             this.btnRefresh.TabIndex = 4;
@@ -128,11 +131,44 @@
             this.txtHargaPerHari.Size = new System.Drawing.Size(501, 22);
             this.txtHargaPerHari.TabIndex = 8;
             // 
+            // btnAnalisis
+            // 
+            this.btnAnalisis.Location = new System.Drawing.Point(461, 127);
+            this.btnAnalisis.Name = "btnAnalisis";
+            this.btnAnalisis.Size = new System.Drawing.Size(75, 23);
+            this.btnAnalisis.TabIndex = 9;
+            this.btnAnalisis.Text = "Analisis";
+            this.btnAnalisis.UseVisualStyleBackColor = true;
+            this.btnAnalisis.Click += new System.EventHandler(this.btnAnalisis_Click);
+            // 
+            // btnReport
+            // 
+            this.btnReport.Location = new System.Drawing.Point(556, 128);
+            this.btnReport.Name = "btnReport";
+            this.btnReport.Size = new System.Drawing.Size(75, 23);
+            this.btnReport.TabIndex = 10;
+            this.btnReport.Text = "Report";
+            this.btnReport.UseVisualStyleBackColor = true;
+            this.btnReport.Click += new System.EventHandler(this.btnReport_Click);
+            // 
+            // btnImport
+            // 
+            this.btnImport.Location = new System.Drawing.Point(640, 128);
+            this.btnImport.Name = "btnImport";
+            this.btnImport.Size = new System.Drawing.Size(75, 23);
+            this.btnImport.TabIndex = 11;
+            this.btnImport.Text = "Import";
+            this.btnImport.UseVisualStyleBackColor = true;
+            this.btnImport.Click += new System.EventHandler(this.btnImport_Click);
+            // 
             // DataKamar
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.btnImport);
+            this.Controls.Add(this.btnReport);
+            this.Controls.Add(this.btnAnalisis);
             this.Controls.Add(this.txtHargaPerHari);
             this.Controls.Add(this.cmbTipeKamar);
             this.Controls.Add(this.label2);
@@ -162,5 +198,8 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.ComboBox cmbTipeKamar;
         private System.Windows.Forms.TextBox txtHargaPerHari;
+        private System.Windows.Forms.Button btnAnalisis;
+        private System.Windows.Forms.Button btnReport;
+        private System.Windows.Forms.Button btnImport;
     }
 }

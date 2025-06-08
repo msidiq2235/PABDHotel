@@ -39,6 +39,9 @@
             this.txtNamaHewan = new System.Windows.Forms.TextBox();
             this.cmbJenis = new System.Windows.Forms.ComboBox();
             this.cmbPemilik = new System.Windows.Forms.ComboBox();
+            this.btnAnalisis = new System.Windows.Forms.Button();
+            this.btnReport = new System.Windows.Forms.Button();
+            this.btnImport = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dgvHewan)).BeginInit();
             this.SuspendLayout();
             // 
@@ -55,7 +58,7 @@
             // 
             // btnTambah
             // 
-            this.btnTambah.Location = new System.Drawing.Point(83, 130);
+            this.btnTambah.Location = new System.Drawing.Point(43, 140);
             this.btnTambah.Name = "btnTambah";
             this.btnTambah.Size = new System.Drawing.Size(75, 23);
             this.btnTambah.TabIndex = 1;
@@ -65,7 +68,7 @@
             // 
             // btnHapus
             // 
-            this.btnHapus.Location = new System.Drawing.Point(253, 130);
+            this.btnHapus.Location = new System.Drawing.Point(145, 140);
             this.btnHapus.Name = "btnHapus";
             this.btnHapus.Size = new System.Drawing.Size(75, 23);
             this.btnHapus.TabIndex = 2;
@@ -75,7 +78,7 @@
             // 
             // btnUbah
             // 
-            this.btnUbah.Location = new System.Drawing.Point(423, 130);
+            this.btnUbah.Location = new System.Drawing.Point(253, 140);
             this.btnUbah.Name = "btnUbah";
             this.btnUbah.Size = new System.Drawing.Size(75, 23);
             this.btnUbah.TabIndex = 3;
@@ -85,7 +88,7 @@
             // 
             // btnRefresh
             // 
-            this.btnRefresh.Location = new System.Drawing.Point(595, 130);
+            this.btnRefresh.Location = new System.Drawing.Point(352, 139);
             this.btnRefresh.Name = "btnRefresh";
             this.btnRefresh.Size = new System.Drawing.Size(75, 23);
             this.btnRefresh.TabIndex = 4;
@@ -146,11 +149,44 @@
             this.cmbPemilik.Size = new System.Drawing.Size(476, 24);
             this.cmbPemilik.TabIndex = 10;
             // 
+            // btnAnalisis
+            // 
+            this.btnAnalisis.Location = new System.Drawing.Point(456, 140);
+            this.btnAnalisis.Name = "btnAnalisis";
+            this.btnAnalisis.Size = new System.Drawing.Size(75, 23);
+            this.btnAnalisis.TabIndex = 11;
+            this.btnAnalisis.Text = "Analisis";
+            this.btnAnalisis.UseVisualStyleBackColor = true;
+            this.btnAnalisis.Click += new System.EventHandler(this.btnAnalisis_Click);
+            // 
+            // btnReport
+            // 
+            this.btnReport.Location = new System.Drawing.Point(553, 140);
+            this.btnReport.Name = "btnReport";
+            this.btnReport.Size = new System.Drawing.Size(75, 23);
+            this.btnReport.TabIndex = 12;
+            this.btnReport.Text = "Report";
+            this.btnReport.UseVisualStyleBackColor = true;
+            this.btnReport.Click += new System.EventHandler(this.btnReport_Click);
+            // 
+            // btnImport
+            // 
+            this.btnImport.Location = new System.Drawing.Point(661, 139);
+            this.btnImport.Name = "btnImport";
+            this.btnImport.Size = new System.Drawing.Size(75, 23);
+            this.btnImport.TabIndex = 13;
+            this.btnImport.Text = "Import";
+            this.btnImport.UseVisualStyleBackColor = true;
+            this.btnImport.Click += new System.EventHandler(this.btnImport_Click);
+            // 
             // DataHewan
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.btnImport);
+            this.Controls.Add(this.btnReport);
+            this.Controls.Add(this.btnAnalisis);
             this.Controls.Add(this.cmbPemilik);
             this.Controls.Add(this.cmbJenis);
             this.Controls.Add(this.txtNamaHewan);
@@ -184,5 +220,8 @@
         private System.Windows.Forms.TextBox txtNamaHewan;
         private System.Windows.Forms.ComboBox cmbJenis;
         private System.Windows.Forms.ComboBox cmbPemilik;
+        private System.Windows.Forms.Button btnAnalisis;
+        private System.Windows.Forms.Button btnReport;
+        private System.Windows.Forms.Button btnImport;
     }
 }

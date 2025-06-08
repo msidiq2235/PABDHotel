@@ -49,6 +49,9 @@
             this.cmbPemilik = new System.Windows.Forms.ComboBox();
             this.cmbHewan = new System.Windows.Forms.ComboBox();
             this.cmbKamar = new System.Windows.Forms.ComboBox();
+            this.btnAnalisis = new System.Windows.Forms.Button();
+            this.btnReport = new System.Windows.Forms.Button();
+            this.btnImport = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dgvTransaksi)).BeginInit();
             this.SuspendLayout();
             // 
@@ -165,7 +168,7 @@
             // 
             // btnTambah
             // 
-            this.btnTambah.Location = new System.Drawing.Point(687, 73);
+            this.btnTambah.Location = new System.Drawing.Point(687, 40);
             this.btnTambah.Name = "btnTambah";
             this.btnTambah.Size = new System.Drawing.Size(75, 23);
             this.btnTambah.TabIndex = 18;
@@ -175,7 +178,7 @@
             // 
             // btnHapus
             // 
-            this.btnHapus.Location = new System.Drawing.Point(687, 123);
+            this.btnHapus.Location = new System.Drawing.Point(687, 106);
             this.btnHapus.Name = "btnHapus";
             this.btnHapus.Size = new System.Drawing.Size(75, 23);
             this.btnHapus.TabIndex = 19;
@@ -195,7 +198,7 @@
             // 
             // btnRefresh
             // 
-            this.btnRefresh.Location = new System.Drawing.Point(687, 226);
+            this.btnRefresh.Location = new System.Drawing.Point(687, 233);
             this.btnRefresh.Name = "btnRefresh";
             this.btnRefresh.Size = new System.Drawing.Size(75, 23);
             this.btnRefresh.TabIndex = 21;
@@ -238,11 +241,44 @@
             this.cmbKamar.Size = new System.Drawing.Size(435, 24);
             this.cmbKamar.TabIndex = 25;
             // 
+            // btnAnalisis
+            // 
+            this.btnAnalisis.Location = new System.Drawing.Point(215, 295);
+            this.btnAnalisis.Name = "btnAnalisis";
+            this.btnAnalisis.Size = new System.Drawing.Size(75, 23);
+            this.btnAnalisis.TabIndex = 26;
+            this.btnAnalisis.Text = "Analisis";
+            this.btnAnalisis.UseVisualStyleBackColor = true;
+            this.btnAnalisis.Click += new System.EventHandler(this.btnAnalisis_Click);
+            // 
+            // btnReport
+            // 
+            this.btnReport.Location = new System.Drawing.Point(391, 295);
+            this.btnReport.Name = "btnReport";
+            this.btnReport.Size = new System.Drawing.Size(75, 23);
+            this.btnReport.TabIndex = 27;
+            this.btnReport.Text = "Report";
+            this.btnReport.UseVisualStyleBackColor = true;
+            this.btnReport.Click += new System.EventHandler(this.btnReport_Click);
+            // 
+            // btnImport
+            // 
+            this.btnImport.Location = new System.Drawing.Point(575, 295);
+            this.btnImport.Name = "btnImport";
+            this.btnImport.Size = new System.Drawing.Size(75, 23);
+            this.btnImport.TabIndex = 28;
+            this.btnImport.Text = "Import";
+            this.btnImport.UseVisualStyleBackColor = true;
+            this.btnImport.Click += new System.EventHandler(this.btnImport_Click);
+            // 
             // DataTransaksi
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(801, 513);
+            this.Controls.Add(this.btnImport);
+            this.Controls.Add(this.btnReport);
+            this.Controls.Add(this.btnAnalisis);
             this.Controls.Add(this.cmbKamar);
             this.Controls.Add(this.cmbHewan);
             this.Controls.Add(this.cmbPemilik);
@@ -296,6 +332,9 @@
         private System.Windows.Forms.ComboBox cmbPemilik;
         private System.Windows.Forms.ComboBox cmbHewan;
         private System.Windows.Forms.ComboBox cmbKamar;
+        private System.Windows.Forms.Button btnAnalisis;
+        private System.Windows.Forms.Button btnReport;
+        private System.Windows.Forms.Button btnImport;
     }
 }
 

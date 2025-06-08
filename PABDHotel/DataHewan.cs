@@ -1,6 +1,8 @@
-﻿using System;
+﻿using ExcelDataReader;
+using System;
 using System.Data;
 using System.Data.SqlClient;
+using System.IO;
 using System.Windows.Forms;
 
 namespace PABDHotel
@@ -243,5 +245,158 @@ namespace PABDHotel
             ClearForm();
         }
 
+        private System.Text.StringBuilder analysisResult;
+
+        private void OnInfoMessage(object sender, SqlInfoMessageEventArgs e)
+        {
+            analysisResult.AppendLine(e.Message);
+        }
+
+        private void btnAnalisis_Click(object sender, EventArgs e)
+        {
+            // Inisialisasi StringBuilder setiap kali tombol diklik
+            analysisResult = new System.Text.StringBuilder();
+
+            // Tentukan Stored Procedure yang ingin dianalisis
+            string queryToAnalyze = "EXEC GetSemuaHewanDetail;";
+
+            MessageBox.Show("Memulai analisis query, mohon tunggu...", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    // Daftarkan event handler SEBELUM membuka koneksi
+                    conn.InfoMessage += OnInfoMessage;
+
+                    conn.Open();
+
+                    // Gabungkan semua perintah dalam satu string
+                    string commandText = $@"
+                    SET STATISTICS IO ON;
+                    SET STATISTICS TIME ON;
+
+                    {queryToAnalyze}
+
+                    SET STATISTICS IO OFF;
+                    SET STATISTICS TIME OFF;";
+
+                    using (SqlCommand cmd = new SqlCommand(commandText, conn))
+                    {
+                        // Gunakan ExecuteNonQuery karena kita tidak tertarik dengan hasil datanya,
+                        // hanya pesan statistiknya.
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+
+                // Tampilkan semua pesan statistik yang sudah terkumpul
+                MessageBox.Show(analysisResult.ToString(), "Hasil Analisis Query", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Gagal melakukan analisis: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void btnReport_Click(object sender, EventArgs e)
+        {
+            FormLaporanHewan frm = new FormLaporanHewan();
+            frm.Show();
+        }
+
+        private void btnImport_Click(object sender, EventArgs e)
+        {
+            using (OpenFileDialog openFileDialog = new OpenFileDialog())
+            {
+                openFileDialog.Filter = "Excel Files|*.xls;*.xlsx;*.xlsm";
+                openFileDialog.Title = "Pilih File Excel untuk Import Hewan";
+                if (openFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    ImportDataFromExcel(openFileDialog.FileName);
+                }
+            }
+        }
+
+        private void ImportDataFromExcel(string filePath)
+        {
+            int successCount = 0;
+            int failCount = 0;
+            var errors = new System.Text.StringBuilder();
+
+            try
+            {
+                System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
+                using (var stream = File.Open(filePath, FileMode.Open, FileAccess.Read))
+                {
+                    using (var reader = ExcelReaderFactory.CreateReader(stream))
+                    {
+                        var result = reader.AsDataSet(new ExcelDataSetConfiguration()
+                        {
+                            ConfigureDataTable = (_) => new ExcelDataTableConfiguration() { UseHeaderRow = true }
+                        });
+                        DataTable dt = result.Tables[0];
+
+                        // Ambil daftar pemilik untuk lookup ID
+                        DataTable dtPemilik = AppCache.GetPemilikHewan();
+
+                        foreach (DataRow row in dt.Rows)
+                        {
+                            try
+                            {
+                                string namaHewan = row["NamaHewan"].ToString();
+                                string jenis = row["Jenis"].ToString();
+                                string namaPemilik = row["NamaPemilik"].ToString();
+
+                                if (string.IsNullOrWhiteSpace(namaHewan) || string.IsNullOrWhiteSpace(jenis) || string.IsNullOrWhiteSpace(namaPemilik))
+                                {
+                                    failCount++; continue;
+                                }
+
+                                // Cari PemilikID berdasarkan NamaPemilik
+                                DataRow[] pemilikRows = dtPemilik.Select($"Nama = '{namaPemilik.Replace("'", "''")}'");
+                                if (pemilikRows.Length == 0)
+                                {
+                                    failCount++;
+                                    errors.AppendLine($"- Baris '{namaHewan}': Pemilik '{namaPemilik}' tidak ditemukan.");
+                                    continue;
+                                }
+                                int pemilikId = Convert.ToInt32(pemilikRows[0]["PemilikID"]);
+
+                                using (SqlConnection conn = new SqlConnection(connectionString))
+                                {
+                                    using (SqlCommand cmd = new SqlCommand("AddHewan", conn))
+                                    {
+                                        cmd.CommandType = CommandType.StoredProcedure;
+                                        cmd.Parameters.AddWithValue("@NamaHewan", namaHewan);
+                                        cmd.Parameters.AddWithValue("@Jenis", jenis);
+                                        cmd.Parameters.AddWithValue("@PemilikID", pemilikId);
+                                        conn.Open();
+                                        cmd.ExecuteNonQuery();
+                                        successCount++;
+                                    }
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                failCount++;
+                                errors.AppendLine($"- Baris '{row["NamaHewan"]}': Error - {ex.Message}");
+                            }
+                        }
+                    }
+                }
+                string summary = $"Proses import selesai.\n\nBerhasil: {successCount} data.\nGagal: {failCount} data.";
+                if (failCount > 0)
+                {
+                    summary += "\n\nDetail Kegagalan:\n" + errors.ToString();
+                }
+                MessageBox.Show(summary, "Laporan Import", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                AppCache.InvalidateHewanCache();
+                LoadData();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Gagal membaca file Excel.\nError: " + ex.Message, "Error Import");
+            }
+        }
     }
 }
