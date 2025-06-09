@@ -28,6 +28,9 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             this.btnTambah = new System.Windows.Forms.Button();
             this.btnHapus = new System.Windows.Forms.Button();
             this.btnUbah = new System.Windows.Forms.Button();
@@ -48,6 +51,9 @@
             // 
             // btnTambah
             // 
+            this.btnTambah.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnTambah.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.btnTambah.Font = new System.Drawing.Font("Segoe UI Semibold", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnTambah.Location = new System.Drawing.Point(192, 159);
             this.btnTambah.Name = "btnTambah";
             this.btnTambah.Size = new System.Drawing.Size(75, 23);
@@ -58,6 +64,9 @@
             // 
             // btnHapus
             // 
+            this.btnHapus.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnHapus.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.btnHapus.Font = new System.Drawing.Font("Segoe UI Semibold", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnHapus.Location = new System.Drawing.Point(313, 159);
             this.btnHapus.Name = "btnHapus";
             this.btnHapus.Size = new System.Drawing.Size(75, 23);
@@ -68,6 +77,9 @@
             // 
             // btnUbah
             // 
+            this.btnUbah.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnUbah.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.btnUbah.Font = new System.Drawing.Font("Segoe UI Semibold", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnUbah.Location = new System.Drawing.Point(451, 159);
             this.btnUbah.Name = "btnUbah";
             this.btnUbah.Size = new System.Drawing.Size(75, 23);
@@ -78,6 +90,9 @@
             // 
             // btnRefresh
             // 
+            this.btnRefresh.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnRefresh.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.btnRefresh.Font = new System.Drawing.Font("Segoe UI Semibold", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnRefresh.Location = new System.Drawing.Point(576, 159);
             this.btnRefresh.Name = "btnRefresh";
             this.btnRefresh.Size = new System.Drawing.Size(75, 23);
@@ -88,9 +103,35 @@
             // 
             // dgvPemilik
             // 
+            this.dgvPemilik.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.dgvPemilik.BackgroundColor = System.Drawing.Color.White;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Segoe UI Semibold", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgvPemilik.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             this.dgvPemilik.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Segoe UI Semibold", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgvPemilik.DefaultCellStyle = dataGridViewCellStyle2;
             this.dgvPemilik.Location = new System.Drawing.Point(41, 200);
             this.dgvPemilik.Name = "dgvPemilik";
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle3.Font = new System.Drawing.Font("Segoe UI Semibold", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgvPemilik.RowHeadersDefaultCellStyle = dataGridViewCellStyle3;
             this.dgvPemilik.RowHeadersWidth = 51;
             this.dgvPemilik.RowTemplate.Height = 24;
             this.dgvPemilik.Size = new System.Drawing.Size(727, 203);
@@ -99,55 +140,70 @@
             // 
             // txtEmail
             // 
+            this.txtEmail.Font = new System.Drawing.Font("Segoe UI Semibold", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtEmail.Location = new System.Drawing.Point(192, 115);
             this.txtEmail.Name = "txtEmail";
-            this.txtEmail.Size = new System.Drawing.Size(459, 22);
+            this.txtEmail.Size = new System.Drawing.Size(459, 25);
             this.txtEmail.TabIndex = 5;
             // 
             // txtNoHP
             // 
+            this.txtNoHP.Font = new System.Drawing.Font("Segoe UI Semibold", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtNoHP.Location = new System.Drawing.Point(192, 74);
             this.txtNoHP.Name = "txtNoHP";
-            this.txtNoHP.Size = new System.Drawing.Size(459, 22);
+            this.txtNoHP.Size = new System.Drawing.Size(459, 25);
             this.txtNoHP.TabIndex = 6;
             this.txtNoHP.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtNoHP_KeyPress);
             // 
             // txtNama
             // 
+            this.txtNama.Font = new System.Drawing.Font("Segoe UI Semibold", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtNama.Location = new System.Drawing.Point(192, 34);
             this.txtNama.Name = "txtNama";
-            this.txtNama.Size = new System.Drawing.Size(459, 22);
+            this.txtNama.Size = new System.Drawing.Size(459, 25);
             this.txtNama.TabIndex = 7;
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(89, 39);
+            this.label1.BackColor = System.Drawing.Color.Transparent;
+            this.label1.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.ForeColor = System.Drawing.Color.White;
+            this.label1.Location = new System.Drawing.Point(89, 36);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(44, 16);
+            this.label1.Size = new System.Drawing.Size(50, 20);
             this.label1.TabIndex = 8;
             this.label1.Text = "Nama";
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(89, 74);
+            this.label2.BackColor = System.Drawing.Color.Transparent;
+            this.label2.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label2.ForeColor = System.Drawing.Color.White;
+            this.label2.Location = new System.Drawing.Point(89, 76);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(44, 16);
+            this.label2.Size = new System.Drawing.Size(50, 20);
             this.label2.TabIndex = 9;
             this.label2.Text = "NoHP";
             // 
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(89, 120);
+            this.label3.BackColor = System.Drawing.Color.Transparent;
+            this.label3.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label3.ForeColor = System.Drawing.Color.White;
+            this.label3.Location = new System.Drawing.Point(89, 117);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(41, 16);
+            this.label3.Size = new System.Drawing.Size(46, 20);
             this.label3.TabIndex = 10;
             this.label3.Text = "Email";
             // 
             // btnAnalisis
             // 
+            this.btnAnalisis.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnAnalisis.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.btnAnalisis.Font = new System.Drawing.Font("Segoe UI Semibold", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnAnalisis.Location = new System.Drawing.Point(693, 32);
             this.btnAnalisis.Name = "btnAnalisis";
             this.btnAnalisis.Size = new System.Drawing.Size(75, 23);
@@ -158,6 +214,9 @@
             // 
             // btnReport
             // 
+            this.btnReport.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnReport.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.btnReport.Font = new System.Drawing.Font("Segoe UI Semibold", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnReport.Location = new System.Drawing.Point(693, 114);
             this.btnReport.Name = "btnReport";
             this.btnReport.Size = new System.Drawing.Size(75, 23);
@@ -168,6 +227,9 @@
             // 
             // btnImport
             // 
+            this.btnImport.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnImport.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.btnImport.Font = new System.Drawing.Font("Segoe UI Semibold", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnImport.Location = new System.Drawing.Point(693, 71);
             this.btnImport.Name = "btnImport";
             this.btnImport.Size = new System.Drawing.Size(75, 23);
@@ -178,18 +240,25 @@
             // 
             // btnKembali
             // 
-            this.btnKembali.Location = new System.Drawing.Point(693, 415);
+            this.btnKembali.BackColor = System.Drawing.SystemColors.Desktop;
+            this.btnKembali.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnKembali.FlatAppearance.BorderSize = 0;
+            this.btnKembali.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnKembali.Font = new System.Drawing.Font("Segoe UI Semibold", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnKembali.ForeColor = System.Drawing.Color.White;
+            this.btnKembali.Location = new System.Drawing.Point(683, 415);
             this.btnKembali.Name = "btnKembali";
-            this.btnKembali.Size = new System.Drawing.Size(75, 23);
+            this.btnKembali.Size = new System.Drawing.Size(85, 23);
             this.btnKembali.TabIndex = 14;
             this.btnKembali.Text = "Kembali";
-            this.btnKembali.UseVisualStyleBackColor = true;
+            this.btnKembali.UseVisualStyleBackColor = false;
             this.btnKembali.Click += new System.EventHandler(this.btnKembali_Click);
             // 
             // DataPemilik
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackgroundImage = global::PABDHotel.Properties.Resources.Form_background_image_2;
             this.ClientSize = new System.Drawing.Size(800, 450);
             this.Controls.Add(this.btnKembali);
             this.Controls.Add(this.btnImport);

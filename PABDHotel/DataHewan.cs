@@ -18,7 +18,6 @@ namespace PABDHotel
 
         private void DataHewan_Load(object sender, EventArgs e)
         {
-            // Pindahkan baris-baris ini
             LoadPemilik();
             LoadData();
         }

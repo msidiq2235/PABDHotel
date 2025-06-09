@@ -66,5 +66,10 @@ namespace PABDHotel
                 MessageBox.Show("Gagal memuat laporan: " + ex.Message);
             }
         }
+
+        private void btnKembali_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
     }
 }

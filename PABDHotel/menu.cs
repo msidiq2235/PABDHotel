@@ -1,5 +1,4 @@
-﻿using PABDHotel;
-using System;
+﻿using System;
 using System.Windows.Forms;
 
 namespace PABDHotel
@@ -37,7 +36,20 @@ namespace PABDHotel
 
         private void btnKeluar_Click(object sender, EventArgs e)
         {
-            this.Close();
+            var hasil = MessageBox.Show("Apakah Anda yakin ingin keluar dari aplikasi?",
+                                        "Konfirmasi Keluar",
+                                        MessageBoxButtons.YesNo,
+                                        MessageBoxIcon.Question);
+
+            if (hasil == DialogResult.Yes)
+            {
+                this.Close();
+            }
+        }
+
+        private void menu_Load(object sender, EventArgs e)
+        {
+            lblStatus.Text = "Selamat datang Admin. Silakan pilih menu yang tersedia.";
         }
     }
 }

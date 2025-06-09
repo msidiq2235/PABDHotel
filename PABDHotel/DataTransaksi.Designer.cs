@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
             this.PemilikID = new System.Windows.Forms.Label();
             this.HewanID = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
@@ -59,117 +60,147 @@
             // PemilikID
             // 
             this.PemilikID.AutoSize = true;
-            this.PemilikID.Location = new System.Drawing.Point(53, 49);
+            this.PemilikID.BackColor = System.Drawing.Color.Transparent;
+            this.PemilikID.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.PemilikID.ForeColor = System.Drawing.Color.White;
+            this.PemilikID.Location = new System.Drawing.Point(48, 44);
             this.PemilikID.Name = "PemilikID";
-            this.PemilikID.Size = new System.Drawing.Size(91, 16);
+            this.PemilikID.Size = new System.Drawing.Size(103, 20);
             this.PemilikID.TabIndex = 0;
             this.PemilikID.Text = "Nama Pemilik";
             // 
             // HewanID
             // 
             this.HewanID.AutoSize = true;
-            this.HewanID.Location = new System.Drawing.Point(53, 80);
+            this.HewanID.BackColor = System.Drawing.Color.Transparent;
+            this.HewanID.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.HewanID.ForeColor = System.Drawing.Color.White;
+            this.HewanID.Location = new System.Drawing.Point(48, 79);
             this.HewanID.Name = "HewanID";
-            this.HewanID.Size = new System.Drawing.Size(89, 16);
+            this.HewanID.Size = new System.Drawing.Size(101, 20);
             this.HewanID.TabIndex = 1;
             this.HewanID.Text = "Nama Hewan";
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(53, 113);
+            this.label1.BackColor = System.Drawing.Color.Transparent;
+            this.label1.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.ForeColor = System.Drawing.Color.White;
+            this.label1.Location = new System.Drawing.Point(48, 109);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(84, 16);
+            this.label1.Size = new System.Drawing.Size(93, 20);
             this.label1.TabIndex = 2;
             this.label1.Text = "Jenis Hewan";
             // 
             // KamarID
             // 
             this.KamarID.AutoSize = true;
-            this.KamarID.Location = new System.Drawing.Point(53, 144);
+            this.KamarID.BackColor = System.Drawing.Color.Transparent;
+            this.KamarID.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.KamarID.ForeColor = System.Drawing.Color.White;
+            this.KamarID.Location = new System.Drawing.Point(48, 139);
             this.KamarID.Name = "KamarID";
-            this.KamarID.Size = new System.Drawing.Size(81, 16);
+            this.KamarID.Size = new System.Drawing.Size(90, 20);
             this.KamarID.TabIndex = 3;
             this.KamarID.Text = "Jenis Kamar";
             // 
             // CheckIn
             // 
             this.CheckIn.AutoSize = true;
-            this.CheckIn.Location = new System.Drawing.Point(59, 172);
+            this.CheckIn.BackColor = System.Drawing.Color.Transparent;
+            this.CheckIn.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.CheckIn.ForeColor = System.Drawing.Color.White;
+            this.CheckIn.Location = new System.Drawing.Point(48, 168);
             this.CheckIn.Name = "CheckIn";
-            this.CheckIn.Size = new System.Drawing.Size(59, 16);
+            this.CheckIn.Size = new System.Drawing.Size(68, 20);
             this.CheckIn.TabIndex = 4;
             this.CheckIn.Text = "Check-In";
             // 
             // CheckOut
             // 
             this.CheckOut.AutoSize = true;
-            this.CheckOut.Location = new System.Drawing.Point(59, 201);
+            this.CheckOut.BackColor = System.Drawing.Color.Transparent;
+            this.CheckOut.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.CheckOut.ForeColor = System.Drawing.Color.White;
+            this.CheckOut.Location = new System.Drawing.Point(48, 197);
             this.CheckOut.Name = "CheckOut";
-            this.CheckOut.Size = new System.Drawing.Size(69, 16);
+            this.CheckOut.Size = new System.Drawing.Size(80, 20);
             this.CheckOut.TabIndex = 5;
             this.CheckOut.Text = "Check-Out";
             // 
             // Fasilitas
             // 
             this.Fasilitas.AutoSize = true;
-            this.Fasilitas.Location = new System.Drawing.Point(61, 233);
+            this.Fasilitas.BackColor = System.Drawing.Color.Transparent;
+            this.Fasilitas.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Fasilitas.ForeColor = System.Drawing.Color.White;
+            this.Fasilitas.Location = new System.Drawing.Point(48, 229);
             this.Fasilitas.Name = "Fasilitas";
-            this.Fasilitas.Size = new System.Drawing.Size(57, 16);
+            this.Fasilitas.Size = new System.Drawing.Size(61, 20);
             this.Fasilitas.TabIndex = 6;
             this.Fasilitas.Text = "Fasilitas";
             // 
             // HargaFasilitas
             // 
             this.HargaFasilitas.AutoSize = true;
-            this.HargaFasilitas.Location = new System.Drawing.Point(53, 264);
+            this.HargaFasilitas.BackColor = System.Drawing.Color.Transparent;
+            this.HargaFasilitas.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.HargaFasilitas.ForeColor = System.Drawing.Color.White;
+            this.HargaFasilitas.Location = new System.Drawing.Point(48, 260);
             this.HargaFasilitas.Name = "HargaFasilitas";
-            this.HargaFasilitas.Size = new System.Drawing.Size(98, 16);
+            this.HargaFasilitas.Size = new System.Drawing.Size(107, 20);
             this.HargaFasilitas.TabIndex = 7;
             this.HargaFasilitas.Text = "Harga Fasilitas";
             // 
             // cmbJenisHewan
             // 
+            this.cmbJenisHewan.Font = new System.Drawing.Font("Segoe UI Semibold", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cmbJenisHewan.FormattingEnabled = true;
             this.cmbJenisHewan.Items.AddRange(new object[] {
             "Anjing",
             "Kucing"});
             this.cmbJenisHewan.Location = new System.Drawing.Point(215, 105);
             this.cmbJenisHewan.Name = "cmbJenisHewan";
-            this.cmbJenisHewan.Size = new System.Drawing.Size(435, 24);
+            this.cmbJenisHewan.Size = new System.Drawing.Size(435, 25);
             this.cmbJenisHewan.TabIndex = 11;
             // 
             // dtpCheckIn
             // 
+            this.dtpCheckIn.Font = new System.Drawing.Font("Segoe UI Semibold", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.dtpCheckIn.Location = new System.Drawing.Point(215, 166);
             this.dtpCheckIn.Name = "dtpCheckIn";
-            this.dtpCheckIn.Size = new System.Drawing.Size(435, 22);
+            this.dtpCheckIn.Size = new System.Drawing.Size(435, 25);
             this.dtpCheckIn.TabIndex = 13;
             // 
             // dtpCheckOut
             // 
+            this.dtpCheckOut.Font = new System.Drawing.Font("Segoe UI Semibold", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.dtpCheckOut.Location = new System.Drawing.Point(215, 195);
             this.dtpCheckOut.Name = "dtpCheckOut";
-            this.dtpCheckOut.Size = new System.Drawing.Size(435, 22);
+            this.dtpCheckOut.Size = new System.Drawing.Size(435, 25);
             this.dtpCheckOut.TabIndex = 14;
             // 
             // txtFasilitas
             // 
+            this.txtFasilitas.Font = new System.Drawing.Font("Segoe UI Semibold", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtFasilitas.Location = new System.Drawing.Point(215, 227);
             this.txtFasilitas.Name = "txtFasilitas";
-            this.txtFasilitas.Size = new System.Drawing.Size(435, 22);
+            this.txtFasilitas.Size = new System.Drawing.Size(435, 25);
             this.txtFasilitas.TabIndex = 15;
             // 
             // txtHargaFasilitas
             // 
+            this.txtHargaFasilitas.Font = new System.Drawing.Font("Segoe UI Semibold", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtHargaFasilitas.Location = new System.Drawing.Point(215, 258);
             this.txtHargaFasilitas.Name = "txtHargaFasilitas";
-            this.txtHargaFasilitas.Size = new System.Drawing.Size(435, 22);
+            this.txtHargaFasilitas.Size = new System.Drawing.Size(435, 25);
             this.txtHargaFasilitas.TabIndex = 16;
             // 
             // btnTambah
             // 
-            this.btnTambah.Location = new System.Drawing.Point(687, 40);
+            this.btnTambah.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnTambah.Location = new System.Drawing.Point(687, 79);
             this.btnTambah.Name = "btnTambah";
             this.btnTambah.Size = new System.Drawing.Size(75, 23);
             this.btnTambah.TabIndex = 18;
@@ -179,7 +210,13 @@
             // 
             // btnHapus
             // 
-            this.btnHapus.Location = new System.Drawing.Point(687, 106);
+            this.btnHapus.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnHapus.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnHapus.FlatAppearance.BorderSize = 0;
+            this.btnHapus.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.btnHapus.Font = new System.Drawing.Font("Segoe UI Semibold", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnHapus.Location = new System.Drawing.Point(687, 122);
             this.btnHapus.Name = "btnHapus";
             this.btnHapus.Size = new System.Drawing.Size(75, 23);
             this.btnHapus.TabIndex = 19;
@@ -189,7 +226,10 @@
             // 
             // btnUbah
             // 
-            this.btnUbah.Location = new System.Drawing.Point(687, 172);
+            this.btnUbah.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnUbah.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.btnUbah.Font = new System.Drawing.Font("Segoe UI Semibold", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnUbah.Location = new System.Drawing.Point(687, 165);
             this.btnUbah.Name = "btnUbah";
             this.btnUbah.Size = new System.Drawing.Size(75, 23);
             this.btnUbah.TabIndex = 20;
@@ -199,7 +239,10 @@
             // 
             // btnRefresh
             // 
-            this.btnRefresh.Location = new System.Drawing.Point(687, 233);
+            this.btnRefresh.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnRefresh.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.btnRefresh.Font = new System.Drawing.Font("Segoe UI Semibold", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnRefresh.Location = new System.Drawing.Point(687, 207);
             this.btnRefresh.Name = "btnRefresh";
             this.btnRefresh.Size = new System.Drawing.Size(75, 23);
             this.btnRefresh.TabIndex = 21;
@@ -209,7 +252,17 @@
             // 
             // dgvTransaksi
             // 
+            this.dgvTransaksi.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.dgvTransaksi.BackgroundColor = System.Drawing.Color.White;
             this.dgvTransaksi.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle4.Font = new System.Drawing.Font("Segoe UI Semibold", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgvTransaksi.DefaultCellStyle = dataGridViewCellStyle4;
             this.dgvTransaksi.Location = new System.Drawing.Point(56, 334);
             this.dgvTransaksi.Name = "dgvTransaksi";
             this.dgvTransaksi.RowHeadersWidth = 51;
@@ -220,30 +273,36 @@
             // 
             // cmbPemilik
             // 
+            this.cmbPemilik.Font = new System.Drawing.Font("Segoe UI Semibold", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cmbPemilik.FormattingEnabled = true;
             this.cmbPemilik.Location = new System.Drawing.Point(215, 40);
             this.cmbPemilik.Name = "cmbPemilik";
-            this.cmbPemilik.Size = new System.Drawing.Size(435, 24);
+            this.cmbPemilik.Size = new System.Drawing.Size(435, 25);
             this.cmbPemilik.TabIndex = 23;
             // 
             // cmbHewan
             // 
+            this.cmbHewan.Font = new System.Drawing.Font("Segoe UI Semibold", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cmbHewan.FormattingEnabled = true;
             this.cmbHewan.Location = new System.Drawing.Point(215, 75);
             this.cmbHewan.Name = "cmbHewan";
-            this.cmbHewan.Size = new System.Drawing.Size(435, 24);
+            this.cmbHewan.Size = new System.Drawing.Size(435, 25);
             this.cmbHewan.TabIndex = 24;
             // 
             // cmbKamar
             // 
+            this.cmbKamar.Font = new System.Drawing.Font("Segoe UI Semibold", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cmbKamar.FormattingEnabled = true;
             this.cmbKamar.Location = new System.Drawing.Point(215, 135);
             this.cmbKamar.Name = "cmbKamar";
-            this.cmbKamar.Size = new System.Drawing.Size(435, 24);
+            this.cmbKamar.Size = new System.Drawing.Size(435, 25);
             this.cmbKamar.TabIndex = 25;
             // 
             // btnAnalisis
             // 
+            this.btnAnalisis.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnAnalisis.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.btnAnalisis.Font = new System.Drawing.Font("Segoe UI Semibold", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnAnalisis.Location = new System.Drawing.Point(215, 295);
             this.btnAnalisis.Name = "btnAnalisis";
             this.btnAnalisis.Size = new System.Drawing.Size(75, 23);
@@ -254,6 +313,9 @@
             // 
             // btnReport
             // 
+            this.btnReport.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnReport.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.btnReport.Font = new System.Drawing.Font("Segoe UI Semibold", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnReport.Location = new System.Drawing.Point(391, 295);
             this.btnReport.Name = "btnReport";
             this.btnReport.Size = new System.Drawing.Size(75, 23);
@@ -264,6 +326,9 @@
             // 
             // btnImport
             // 
+            this.btnImport.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnImport.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.btnImport.Font = new System.Drawing.Font("Segoe UI Semibold", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnImport.Location = new System.Drawing.Point(575, 295);
             this.btnImport.Name = "btnImport";
             this.btnImport.Size = new System.Drawing.Size(75, 23);
@@ -274,18 +339,25 @@
             // 
             // btnKembali
             // 
-            this.btnKembali.Location = new System.Drawing.Point(687, 478);
+            this.btnKembali.BackColor = System.Drawing.SystemColors.Desktop;
+            this.btnKembali.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnKembali.FlatAppearance.BorderSize = 0;
+            this.btnKembali.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnKembali.Font = new System.Drawing.Font("Segoe UI Semibold", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnKembali.ForeColor = System.Drawing.Color.White;
+            this.btnKembali.Location = new System.Drawing.Point(680, 478);
             this.btnKembali.Name = "btnKembali";
-            this.btnKembali.Size = new System.Drawing.Size(75, 23);
+            this.btnKembali.Size = new System.Drawing.Size(82, 23);
             this.btnKembali.TabIndex = 29;
             this.btnKembali.Text = "Kembali";
-            this.btnKembali.UseVisualStyleBackColor = true;
+            this.btnKembali.UseVisualStyleBackColor = false;
             this.btnKembali.Click += new System.EventHandler(this.btnKembali_Click);
             // 
             // DataTransaksi
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackgroundImage = global::PABDHotel.Properties.Resources.Form_background_image_2;
             this.ClientSize = new System.Drawing.Size(801, 513);
             this.Controls.Add(this.btnKembali);
             this.Controls.Add(this.btnImport);

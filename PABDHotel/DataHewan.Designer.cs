@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
             this.dgvHewan = new System.Windows.Forms.DataGridView();
             this.btnTambah = new System.Windows.Forms.Button();
             this.btnHapus = new System.Windows.Forms.Button();
@@ -48,7 +49,17 @@
             // 
             // dgvHewan
             // 
+            this.dgvHewan.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.dgvHewan.BackgroundColor = System.Drawing.Color.White;
             this.dgvHewan.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle6.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle6.Font = new System.Drawing.Font("Segoe UI Semibold", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle6.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle6.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle6.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle6.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgvHewan.DefaultCellStyle = dataGridViewCellStyle6;
             this.dgvHewan.Location = new System.Drawing.Point(43, 184);
             this.dgvHewan.Name = "dgvHewan";
             this.dgvHewan.RowHeadersWidth = 51;
@@ -59,6 +70,9 @@
             // 
             // btnTambah
             // 
+            this.btnTambah.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnTambah.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.btnTambah.Font = new System.Drawing.Font("Segoe UI Semibold", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnTambah.Location = new System.Drawing.Point(43, 140);
             this.btnTambah.Name = "btnTambah";
             this.btnTambah.Size = new System.Drawing.Size(75, 23);
@@ -69,6 +83,9 @@
             // 
             // btnHapus
             // 
+            this.btnHapus.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnHapus.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.btnHapus.Font = new System.Drawing.Font("Segoe UI Semibold", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnHapus.Location = new System.Drawing.Point(145, 140);
             this.btnHapus.Name = "btnHapus";
             this.btnHapus.Size = new System.Drawing.Size(75, 23);
@@ -79,6 +96,9 @@
             // 
             // btnUbah
             // 
+            this.btnUbah.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnUbah.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.btnUbah.Font = new System.Drawing.Font("Segoe UI Semibold", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnUbah.Location = new System.Drawing.Point(253, 140);
             this.btnUbah.Name = "btnUbah";
             this.btnUbah.Size = new System.Drawing.Size(75, 23);
@@ -89,7 +109,10 @@
             // 
             // btnRefresh
             // 
-            this.btnRefresh.Location = new System.Drawing.Point(352, 139);
+            this.btnRefresh.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnRefresh.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.btnRefresh.Font = new System.Drawing.Font("Segoe UI Semibold", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnRefresh.Location = new System.Drawing.Point(362, 140);
             this.btnRefresh.Name = "btnRefresh";
             this.btnRefresh.Size = new System.Drawing.Size(75, 23);
             this.btnRefresh.TabIndex = 4;
@@ -100,59 +123,74 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(80, 27);
+            this.label1.BackColor = System.Drawing.Color.Transparent;
+            this.label1.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.ForeColor = System.Drawing.Color.White;
+            this.label1.Location = new System.Drawing.Point(80, 22);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(89, 16);
+            this.label1.Size = new System.Drawing.Size(101, 20);
             this.label1.TabIndex = 5;
             this.label1.Text = "Nama Hewan";
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(94, 60);
+            this.label2.BackColor = System.Drawing.Color.Transparent;
+            this.label2.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label2.ForeColor = System.Drawing.Color.White;
+            this.label2.Location = new System.Drawing.Point(82, 64);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(39, 16);
+            this.label2.Size = new System.Drawing.Size(42, 20);
             this.label2.TabIndex = 6;
             this.label2.Text = "Jenis";
             // 
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(82, 94);
+            this.label3.BackColor = System.Drawing.Color.Transparent;
+            this.label3.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label3.ForeColor = System.Drawing.Color.White;
+            this.label3.Location = new System.Drawing.Point(80, 104);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(51, 16);
+            this.label3.Size = new System.Drawing.Size(58, 20);
             this.label3.TabIndex = 7;
             this.label3.Text = "Pemilik";
             // 
             // txtNamaHewan
             // 
+            this.txtNamaHewan.Font = new System.Drawing.Font("Segoe UI Semibold", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtNamaHewan.Location = new System.Drawing.Point(253, 20);
             this.txtNamaHewan.Name = "txtNamaHewan";
-            this.txtNamaHewan.Size = new System.Drawing.Size(476, 22);
+            this.txtNamaHewan.Size = new System.Drawing.Size(504, 25);
             this.txtNamaHewan.TabIndex = 8;
             // 
             // cmbJenis
             // 
+            this.cmbJenis.Font = new System.Drawing.Font("Segoe UI Semibold", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cmbJenis.FormattingEnabled = true;
             this.cmbJenis.Items.AddRange(new object[] {
             "Anjing",
             "Kucing"});
             this.cmbJenis.Location = new System.Drawing.Point(253, 60);
             this.cmbJenis.Name = "cmbJenis";
-            this.cmbJenis.Size = new System.Drawing.Size(476, 24);
+            this.cmbJenis.Size = new System.Drawing.Size(504, 25);
             this.cmbJenis.TabIndex = 9;
             // 
             // cmbPemilik
             // 
+            this.cmbPemilik.Font = new System.Drawing.Font("Segoe UI Semibold", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cmbPemilik.FormattingEnabled = true;
             this.cmbPemilik.Location = new System.Drawing.Point(253, 100);
             this.cmbPemilik.Name = "cmbPemilik";
-            this.cmbPemilik.Size = new System.Drawing.Size(476, 24);
+            this.cmbPemilik.Size = new System.Drawing.Size(504, 25);
             this.cmbPemilik.TabIndex = 10;
             // 
             // btnAnalisis
             // 
-            this.btnAnalisis.Location = new System.Drawing.Point(456, 140);
+            this.btnAnalisis.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnAnalisis.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.btnAnalisis.Font = new System.Drawing.Font("Segoe UI Semibold", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnAnalisis.Location = new System.Drawing.Point(469, 140);
             this.btnAnalisis.Name = "btnAnalisis";
             this.btnAnalisis.Size = new System.Drawing.Size(75, 23);
             this.btnAnalisis.TabIndex = 11;
@@ -162,7 +200,10 @@
             // 
             // btnReport
             // 
-            this.btnReport.Location = new System.Drawing.Point(553, 140);
+            this.btnReport.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnReport.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.btnReport.Font = new System.Drawing.Font("Segoe UI Semibold", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnReport.Location = new System.Drawing.Point(571, 140);
             this.btnReport.Name = "btnReport";
             this.btnReport.Size = new System.Drawing.Size(75, 23);
             this.btnReport.TabIndex = 12;
@@ -172,7 +213,10 @@
             // 
             // btnImport
             // 
-            this.btnImport.Location = new System.Drawing.Point(661, 139);
+            this.btnImport.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnImport.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.btnImport.Font = new System.Drawing.Font("Segoe UI Semibold", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnImport.Location = new System.Drawing.Point(682, 140);
             this.btnImport.Name = "btnImport";
             this.btnImport.Size = new System.Drawing.Size(75, 23);
             this.btnImport.TabIndex = 13;
@@ -182,18 +226,25 @@
             // 
             // btnKembali
             // 
-            this.btnKembali.Location = new System.Drawing.Point(682, 415);
+            this.btnKembali.BackColor = System.Drawing.SystemColors.Desktop;
+            this.btnKembali.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnKembali.FlatAppearance.BorderSize = 0;
+            this.btnKembali.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnKembali.Font = new System.Drawing.Font("Segoe UI Semibold", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnKembali.ForeColor = System.Drawing.Color.White;
+            this.btnKembali.Location = new System.Drawing.Point(672, 415);
             this.btnKembali.Name = "btnKembali";
-            this.btnKembali.Size = new System.Drawing.Size(75, 23);
+            this.btnKembali.Size = new System.Drawing.Size(85, 23);
             this.btnKembali.TabIndex = 14;
             this.btnKembali.Text = "Kembali";
-            this.btnKembali.UseVisualStyleBackColor = true;
+            this.btnKembali.UseVisualStyleBackColor = false;
             this.btnKembali.Click += new System.EventHandler(this.btnKembali_Click);
             // 
             // DataHewan
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackgroundImage = global::PABDHotel.Properties.Resources.Form_background_image_2;
             this.ClientSize = new System.Drawing.Size(800, 450);
             this.Controls.Add(this.btnKembali);
             this.Controls.Add(this.btnImport);

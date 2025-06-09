@@ -40,5 +40,10 @@ namespace PABDHotel
             }
             catch (Exception ex) { MessageBox.Show("Gagal memuat laporan kamar: " + ex.Message); }
         }
+
+        private void btnKembali_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
     }
 }

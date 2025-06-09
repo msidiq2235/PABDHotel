@@ -11,7 +11,6 @@ namespace PABDHotel
         // Mendapatkan instance cache default dari .NET
         private static readonly ObjectCache cache = MemoryCache.Default;
 
-        // Sesuaikan connection string Anda
         private static string connectionString = "Data Source=LAPTOP-0LTDAB53\\MSIDIQ;Initial Catalog=HotelHewanPeliharaanKuan;Integrated Security=True";
 
         // Kebijakan kadaluwarsa cache (bisa digunakan bersama)
