@@ -1251,6 +1251,8 @@ namespace PABDHotel {
             
             private global::System.Data.DataColumn columnNamaFasilitas;
             
+            private global::System.Data.DataColumn columnHargaFasilitas;
+            
             private global::System.Data.DataColumn columnTotalBiaya;
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -1344,6 +1346,14 @@ namespace PABDHotel {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public global::System.Data.DataColumn HargaFasilitasColumn {
+                get {
+                    return this.columnHargaFasilitas;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
             public global::System.Data.DataColumn TotalBiayaColumn {
                 get {
                     return this.columnTotalBiaya;
@@ -1387,7 +1397,7 @@ namespace PABDHotel {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
-            public DataTransaksiRow AddDataTransaksiRow(int TransaksiID, string NamaPemilik, string NamaHewan, string TipeKamar, System.DateTime TanggalCheckIn, System.DateTime TanggalCheckOut, string NamaFasilitas, decimal TotalBiaya) {
+            public DataTransaksiRow AddDataTransaksiRow(int TransaksiID, string NamaPemilik, string NamaHewan, string TipeKamar, System.DateTime TanggalCheckIn, System.DateTime TanggalCheckOut, string NamaFasilitas, decimal HargaFasilitas, decimal TotalBiaya) {
                 DataTransaksiRow rowDataTransaksiRow = ((DataTransaksiRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         TransaksiID,
@@ -1397,6 +1407,7 @@ namespace PABDHotel {
                         TanggalCheckIn,
                         TanggalCheckOut,
                         NamaFasilitas,
+                        HargaFasilitas,
                         TotalBiaya};
                 rowDataTransaksiRow.ItemArray = columnValuesArray;
                 this.Rows.Add(rowDataTransaksiRow);
@@ -1427,6 +1438,7 @@ namespace PABDHotel {
                 this.columnTanggalCheckIn = base.Columns["TanggalCheckIn"];
                 this.columnTanggalCheckOut = base.Columns["TanggalCheckOut"];
                 this.columnNamaFasilitas = base.Columns["NamaFasilitas"];
+                this.columnHargaFasilitas = base.Columns["HargaFasilitas"];
                 this.columnTotalBiaya = base.Columns["TotalBiaya"];
             }
             
@@ -1447,6 +1459,8 @@ namespace PABDHotel {
                 base.Columns.Add(this.columnTanggalCheckOut);
                 this.columnNamaFasilitas = new global::System.Data.DataColumn("NamaFasilitas", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnNamaFasilitas);
+                this.columnHargaFasilitas = new global::System.Data.DataColumn("HargaFasilitas", typeof(decimal), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnHargaFasilitas);
                 this.columnTotalBiaya = new global::System.Data.DataColumn("TotalBiaya", typeof(decimal), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnTotalBiaya);
             }
@@ -2056,6 +2070,22 @@ namespace PABDHotel {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public decimal HargaFasilitas {
+                get {
+                    try {
+                        return ((decimal)(this[this.tableDataTransaksi.HargaFasilitasColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'HargaFasilitas\' in table \'DataTransaksi\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableDataTransaksi.HargaFasilitasColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
             public decimal TotalBiaya {
                 get {
                     try {
@@ -2152,6 +2182,18 @@ namespace PABDHotel {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
             public void SetNamaFasilitasNull() {
                 this[this.tableDataTransaksi.NamaFasilitasColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public bool IsHargaFasilitasNull() {
+                return this.IsNull(this.tableDataTransaksi.HargaFasilitasColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public void SetHargaFasilitasNull() {
+                this[this.tableDataTransaksi.HargaFasilitasColumn] = global::System.Convert.DBNull;
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]

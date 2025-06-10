@@ -1,13 +1,7 @@
 ﻿using Microsoft.Reporting.WinForms;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.Data.SqlClient;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace PABDHotel
@@ -40,6 +34,11 @@ namespace PABDHotel
                 this.reportViewer1.RefreshReport();
             }
             catch (Exception ex) { MessageBox.Show("Gagal memuat laporan transaksi: " + ex.Message); }
+        }
+
+        private void btnKembali_Click(object sender, EventArgs e)
+        {
+            this.Close();
         }
     }
 }

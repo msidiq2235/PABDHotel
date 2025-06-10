@@ -3,6 +3,7 @@ using System;
 using System.Data;
 using System.Data.SqlClient;
 using System.IO;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace PABDHotel
@@ -104,9 +105,29 @@ namespace PABDHotel
             cmbKamar.SelectedIndex = -1;
         }
 
+        private bool IsNameValid(string name)
+        {
+            if (string.IsNullOrEmpty(name)) return true; // Boleh kosong
+            return name.All(c => char.IsLetter(c) || char.IsWhiteSpace(c));
+        }
+
+        private void cmbHewan_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            // Pastikan ada item yang dipilih dan bukan event saat dikosongkan
+            if (cmbHewan.SelectedItem is DataRowView drv)
+            {
+                // Ambil nilai dari kolom "Jenis" dari item yang dipilih
+                txtJenisHewan.Text = drv["Jenis"].ToString();
+            }
+            else
+            {
+                // Kosongkan jika tidak ada hewan yang dipilih
+                txtJenisHewan.Text = "";
+            }
+        }
+
         private void btnTambah_Click(object sender, EventArgs e)
         {
-            // Validasi input
             if (cmbPemilik.SelectedValue == null || cmbHewan.SelectedValue == null || cmbKamar.SelectedValue == null)
             {
                 MessageBox.Show("Harap pilih Pemilik, Hewan, dan Tipe Kamar.", "Input Tidak Lengkap", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -117,6 +138,17 @@ namespace PABDHotel
                 MessageBox.Show("Tanggal Check-Out harus setelah Tanggal Check-In.", "Input Tidak Valid", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
+            if (!IsNameValid(txtFasilitas.Text))
+            {
+                MessageBox.Show("Nama Fasilitas hanya boleh berisi huruf dan spasi.", "Input Tidak Valid", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+            if (!decimal.TryParse(txtHargaFasilitas.Text, out decimal hargaFasilitas) && !string.IsNullOrEmpty(txtHargaFasilitas.Text))
+            {
+                MessageBox.Show("Harga Fasilitas harus berupa angka yang valid.", "Input Tidak Valid", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+            // ===================================
 
             try
             {
@@ -131,9 +163,6 @@ namespace PABDHotel
                         cmd.Parameters.AddWithValue("@TanggalCheckIn", dtpCheckIn.Value);
                         cmd.Parameters.AddWithValue("@TanggalCheckOut", dtpCheckOut.Value);
                         cmd.Parameters.AddWithValue("@NamaFasilitas", string.IsNullOrWhiteSpace(txtFasilitas.Text) ? (object)DBNull.Value : txtFasilitas.Text);
-
-                        decimal hargaFasilitas = 0;
-                        decimal.TryParse(txtHargaFasilitas.Text, out hargaFasilitas);
                         cmd.Parameters.AddWithValue("@HargaFasilitas", hargaFasilitas);
 
                         conn.Open();
@@ -153,9 +182,19 @@ namespace PABDHotel
         private void btnUbah_Click(object sender, EventArgs e)
         {
             if (dgvTransaksi.SelectedRows.Count == 0) { MessageBox.Show("Pilih transaksi yang ingin diubah!"); return; }
-            // Validasi lainnya
             if (cmbPemilik.SelectedValue == null || cmbHewan.SelectedValue == null || cmbKamar.SelectedValue == null) { MessageBox.Show("Harap pilih Pemilik, Hewan, dan Tipe Kamar."); return; }
             if (dtpCheckIn.Value.Date >= dtpCheckOut.Value.Date) { MessageBox.Show("Tanggal Check-Out harus setelah Tanggal Check-In."); return; }
+
+            if (!IsNameValid(txtFasilitas.Text))
+            {
+                MessageBox.Show("Nama Fasilitas hanya boleh berisi huruf dan spasi.", "Input Tidak Valid", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+            if (!decimal.TryParse(txtHargaFasilitas.Text, out decimal hargaFasilitas) && !string.IsNullOrEmpty(txtHargaFasilitas.Text))
+            {
+                MessageBox.Show("Harga Fasilitas harus berupa angka yang valid.", "Input Tidak Valid", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
 
             try
             {
@@ -172,9 +211,6 @@ namespace PABDHotel
                         cmd.Parameters.AddWithValue("@TanggalCheckIn", dtpCheckIn.Value);
                         cmd.Parameters.AddWithValue("@TanggalCheckOut", dtpCheckOut.Value);
                         cmd.Parameters.AddWithValue("@NamaFasilitas", string.IsNullOrWhiteSpace(txtFasilitas.Text) ? (object)DBNull.Value : txtFasilitas.Text);
-
-                        decimal hargaFasilitas = 0;
-                        decimal.TryParse(txtHargaFasilitas.Text, out hargaFasilitas);
                         cmd.Parameters.AddWithValue("@HargaFasilitas", hargaFasilitas);
 
                         conn.Open();
@@ -240,24 +276,27 @@ namespace PABDHotel
                 try
                 {
                     DataGridViewRow row = dgvTransaksi.Rows[e.RowIndex];
+
+                    // Mengisi ComboBox
                     cmbPemilik.SelectedValue = row.Cells["PemilikID"].Value;
                     cmbHewan.SelectedValue = row.Cells["HewanID"].Value;
                     cmbKamar.SelectedValue = row.Cells["KamarID"].Value;
+
+                    // Setelah cmbHewan diisi, jenis hewan akan otomatis terisi
+                    // karena event SelectedIndexChanged terpicu.
+                    // Namun, kita bisa pastikan lagi di sini.
+                    if (dgvTransaksi.Columns.Contains("Jenis") && row.Cells["Jenis"].Value != null)
+                    {
+                        txtJenisHewan.Text = row.Cells["Jenis"].Value.ToString();
+                    }
+
+                    // Mengisi kontrol lain
                     dtpCheckIn.Value = Convert.ToDateTime(row.Cells["TanggalCheckIn"].Value);
                     dtpCheckOut.Value = Convert.ToDateTime(row.Cells["TanggalCheckOut"].Value);
                     txtFasilitas.Text = row.Cells["NamaFasilitas"].Value?.ToString() ?? "";
-                    txtHargaFasilitas.Text = "";
-
-                    if (dgvTransaksi.Columns.Contains("Jenis") && row.Cells["Jenis"].Value != null)
-                    {
-                        cmbJenisHewan.Text = row.Cells["Jenis"].Value.ToString();
-                    }
+                    txtHargaFasilitas.Text = row.Cells["HargaFasilitas"].Value?.ToString() ?? "";
                 }
-                catch (Exception)
-                {
-                    // Error bisa terjadi jika user klik saat data sedang di-refresh.
-                    // Abaikan saja agar aplikasi tidak crash.
-                }
+                catch (Exception) { /* Abaikan error */ }
             }
         }
 
@@ -273,10 +312,9 @@ namespace PABDHotel
             // Inisialisasi StringBuilder setiap kali tombol diklik
             analysisResult = new System.Text.StringBuilder();
 
-            // Tentukan Stored Procedure yang ingin dianalisis
+            // Tentukan Stored Procedure 
             string queryToAnalyze = "EXEC GetSemuaTransaksiDetail;";
 
-            MessageBox.Show("Memulai analisis query, mohon tunggu...", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
             try
             {

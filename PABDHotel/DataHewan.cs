@@ -3,6 +3,7 @@ using System;
 using System.Data;
 using System.Data.SqlClient;
 using System.IO;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace PABDHotel
@@ -76,6 +77,11 @@ namespace PABDHotel
             dgvHewan.ClearSelection();
         }
 
+        private bool IsNameValid(string name)
+        {
+            return name.All(c => char.IsLetter(c) || char.IsWhiteSpace(c));
+        }
+
         private void btnTambah_Click(object sender, EventArgs e)
         {
             // VALIDASI
@@ -83,6 +89,11 @@ namespace PABDHotel
             {
                 MessageBox.Show("Nama hewan wajib diisi.", "Input Tidak Lengkap", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 txtNamaHewan.Focus();
+                return;
+            }
+            if (!IsNameValid(txtNamaHewan.Text))
+            {
+                MessageBox.Show("Nama hewan hanya boleh berisi huruf dan spasi.", "Input Tidak Valid", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
             if (cmbJenis.SelectedIndex == -1)
@@ -136,6 +147,11 @@ namespace PABDHotel
             {
                 MessageBox.Show("Nama hewan wajib diisi.", "Input Tidak Lengkap", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 txtNamaHewan.Focus();
+                return;
+            }
+            if (!IsNameValid(txtNamaHewan.Text))
+            {
+                MessageBox.Show("Nama hewan hanya boleh berisi huruf dan spasi.", "Input Tidak Valid", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
             if (cmbJenis.SelectedIndex == -1)
@@ -256,10 +272,8 @@ namespace PABDHotel
             // Inisialisasi StringBuilder setiap kali tombol diklik
             analysisResult = new System.Text.StringBuilder();
 
-            // Tentukan Stored Procedure yang ingin dianalisis
+            // Tentukan Stored Procedure
             string queryToAnalyze = "EXEC GetSemuaHewanDetail;";
-
-            MessageBox.Show("Memulai analisis query, mohon tunggu...", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
             try
             {

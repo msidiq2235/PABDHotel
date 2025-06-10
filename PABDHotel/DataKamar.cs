@@ -203,10 +203,8 @@ namespace PABDHotel
             // Inisialisasi StringBuilder setiap kali tombol diklik
             analysisResult = new System.Text.StringBuilder();
 
-            // Tentukan Stored Procedure yang ingin dianalisis
+            // Tentukan Stored Procedure
             string queryToAnalyze = "EXEC GetSemuaKamar;";
-
-            MessageBox.Show("Memulai analisis query, mohon tunggu...", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
             try
             {

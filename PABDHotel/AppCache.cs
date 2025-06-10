@@ -2,7 +2,6 @@
 using System.Data;
 using System.Data.SqlClient;
 using System.Runtime.Caching;
-using System.Windows.Forms;
 
 namespace PABDHotel
 {

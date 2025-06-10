@@ -81,14 +81,32 @@ namespace PABDHotel
             return text.All(char.IsDigit);
         }
 
-        
+        private bool IsNameValid(string name)
+        {
+            return !name.Any(char.IsDigit);
+        }
+
+
 
         private void btnTambah_Click(object sender, EventArgs e)
         {
             // Validasi
-            if (string.IsNullOrWhiteSpace(txtNama.Text) || string.IsNullOrWhiteSpace(txtNoHP.Text)) { MessageBox.Show("Nama dan No HP wajib diisi."); return; }
-            if (!IsNumeric(txtNoHP.Text)) { MessageBox.Show("Nomor HP hanya boleh berisi angka.", "Input Tidak Valid", MessageBoxButtons.OK, MessageBoxIcon.Warning); return; }
-            if (!IsValidEmail(txtEmail.Text)) { MessageBox.Show("Format email tidak valid.", "Input Tidak Valid", MessageBoxButtons.OK, MessageBoxIcon.Warning); return; }
+            if (!IsNameValid(txtNama.Text))
+            {
+                MessageBox.Show("Nama pemilik hanya boleh berisi huruf dan spasi.", "Input Tidak Valid", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+            if (!IsNumeric(txtNoHP.Text))
+            {
+                MessageBox.Show("Nomor HP hanya boleh berisi angka.", "Input Tidak Valid", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+            if (!IsValidEmail(txtEmail.Text))
+            {
+                MessageBox.Show("Format email tidak valid.", "Input Tidak Valid", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
 
             try
             {
@@ -125,8 +143,21 @@ namespace PABDHotel
                 return;
             }
             // Validasi
-            if (!IsNumeric(txtNoHP.Text)) { MessageBox.Show("Nomor HP hanya boleh berisi angka.", "Input Tidak Valid", MessageBoxButtons.OK, MessageBoxIcon.Warning); return; }
-            if (!IsValidEmail(txtEmail.Text)) { MessageBox.Show("Format email tidak valid.", "Input Tidak Valid", MessageBoxButtons.OK, MessageBoxIcon.Warning); return; }
+            if (!IsNameValid(txtNama.Text))
+            {
+                MessageBox.Show("Nama pemilik hanya boleh berisi huruf dan spasi.", "Input Tidak Valid", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+            if (!IsNumeric(txtNoHP.Text))
+            {
+                MessageBox.Show("Nomor HP hanya boleh berisi angka.", "Input Tidak Valid", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+            if (!IsValidEmail(txtEmail.Text))
+            {
+                MessageBox.Show("Format email tidak valid.", "Input Tidak Valid", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
 
             try
             {
@@ -206,14 +237,6 @@ namespace PABDHotel
             }
         }
 
-        private void txtNoHP_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            if (!char.IsDigit(e.KeyChar) && !char.IsControl(e.KeyChar))
-            {
-                e.Handled = true;
-            }
-        }
-
 
         // Variabel untuk menampung hasil analisis dari SQL Server
         private System.Text.StringBuilder analysisResult;
@@ -231,10 +254,8 @@ namespace PABDHotel
             // Inisialisasi StringBuilder setiap kali tombol diklik
             analysisResult = new System.Text.StringBuilder();
 
-            // Tentukan Stored Procedure yang ingin dianalisis
+            // Tentukan Stored
             string queryToAnalyze = "EXEC GetSemuaPemilikHewan;";
-
-            MessageBox.Show("Memulai analisis query, mohon tunggu...", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
             try
             {

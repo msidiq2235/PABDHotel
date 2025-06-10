@@ -153,7 +153,6 @@
             this.txtNoHP.Name = "txtNoHP";
             this.txtNoHP.Size = new System.Drawing.Size(459, 25);
             this.txtNoHP.TabIndex = 6;
-            this.txtNoHP.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtNoHP_KeyPress);
             // 
             // txtNama
             // 

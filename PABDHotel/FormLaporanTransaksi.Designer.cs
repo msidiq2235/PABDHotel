@@ -29,31 +29,21 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            Microsoft.Reporting.WinForms.ReportDataSource reportDataSource3 = new Microsoft.Reporting.WinForms.ReportDataSource();
-            this.dataTransaksiBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.laporanDataSet = new PABDHotel.LaporanDataSet();
+            Microsoft.Reporting.WinForms.ReportDataSource reportDataSource1 = new Microsoft.Reporting.WinForms.ReportDataSource();
             this.reportViewer1 = new Microsoft.Reporting.WinForms.ReportViewer();
             this.btnKembali = new System.Windows.Forms.Button();
+            this.dataTransaksiBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.laporanDataSet = new PABDHotel.LaporanDataSet();
             ((System.ComponentModel.ISupportInitialize)(this.dataTransaksiBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.laporanDataSet)).BeginInit();
             this.SuspendLayout();
             // 
-            // dataTransaksiBindingSource
-            // 
-            this.dataTransaksiBindingSource.DataMember = "DataTransaksi";
-            this.dataTransaksiBindingSource.DataSource = this.laporanDataSet;
-            // 
-            // laporanDataSet
-            // 
-            this.laporanDataSet.DataSetName = "LaporanDataSet";
-            this.laporanDataSet.SchemaSerializationMode = System.Data.SchemaSerializationMode.IncludeSchema;
-            // 
             // reportViewer1
             // 
             this.reportViewer1.Font = new System.Drawing.Font("Segoe UI Semibold", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            reportDataSource3.Name = "LaporanTransaksi";
-            reportDataSource3.Value = this.dataTransaksiBindingSource;
-            this.reportViewer1.LocalReport.DataSources.Add(reportDataSource3);
+            reportDataSource1.Name = "LaporanTransaksi";
+            reportDataSource1.Value = this.dataTransaksiBindingSource;
+            this.reportViewer1.LocalReport.DataSources.Add(reportDataSource1);
             this.reportViewer1.LocalReport.ReportEmbeddedResource = "PABDHotel.LaporanTransaksi.rdlc";
             this.reportViewer1.Location = new System.Drawing.Point(12, 12);
             this.reportViewer1.Name = "reportViewer1";
@@ -71,6 +61,17 @@
             this.btnKembali.TabIndex = 2;
             this.btnKembali.Text = "Kembali";
             this.btnKembali.UseVisualStyleBackColor = true;
+            this.btnKembali.Click += new System.EventHandler(this.btnKembali_Click);
+            // 
+            // dataTransaksiBindingSource
+            // 
+            this.dataTransaksiBindingSource.DataMember = "DataTransaksi";
+            this.dataTransaksiBindingSource.DataSource = this.laporanDataSet;
+            // 
+            // laporanDataSet
+            // 
+            this.laporanDataSet.DataSetName = "LaporanDataSet";
+            this.laporanDataSet.SchemaSerializationMode = System.Data.SchemaSerializationMode.IncludeSchema;
             // 
             // FormLaporanTransaksi
             // 

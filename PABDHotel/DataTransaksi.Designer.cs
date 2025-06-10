@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             this.PemilikID = new System.Windows.Forms.Label();
             this.HewanID = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
@@ -37,7 +37,6 @@
             this.CheckOut = new System.Windows.Forms.Label();
             this.Fasilitas = new System.Windows.Forms.Label();
             this.HargaFasilitas = new System.Windows.Forms.Label();
-            this.cmbJenisHewan = new System.Windows.Forms.ComboBox();
             this.dtpCheckIn = new System.Windows.Forms.DateTimePicker();
             this.dtpCheckOut = new System.Windows.Forms.DateTimePicker();
             this.txtFasilitas = new System.Windows.Forms.TextBox();
@@ -54,6 +53,7 @@
             this.btnReport = new System.Windows.Forms.Button();
             this.btnImport = new System.Windows.Forms.Button();
             this.btnKembali = new System.Windows.Forms.Button();
+            this.txtJenisHewan = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.dgvTransaksi)).BeginInit();
             this.SuspendLayout();
             // 
@@ -153,18 +153,6 @@
             this.HargaFasilitas.TabIndex = 7;
             this.HargaFasilitas.Text = "Harga Fasilitas";
             // 
-            // cmbJenisHewan
-            // 
-            this.cmbJenisHewan.Font = new System.Drawing.Font("Segoe UI Semibold", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cmbJenisHewan.FormattingEnabled = true;
-            this.cmbJenisHewan.Items.AddRange(new object[] {
-            "Anjing",
-            "Kucing"});
-            this.cmbJenisHewan.Location = new System.Drawing.Point(215, 105);
-            this.cmbJenisHewan.Name = "cmbJenisHewan";
-            this.cmbJenisHewan.Size = new System.Drawing.Size(435, 25);
-            this.cmbJenisHewan.TabIndex = 11;
-            // 
             // dtpCheckIn
             // 
             this.dtpCheckIn.Font = new System.Drawing.Font("Segoe UI Semibold", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -255,14 +243,14 @@
             this.dgvTransaksi.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dgvTransaksi.BackgroundColor = System.Drawing.Color.White;
             this.dgvTransaksi.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle4.Font = new System.Drawing.Font("Segoe UI Semibold", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dgvTransaksi.DefaultCellStyle = dataGridViewCellStyle4;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Segoe UI Semibold", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgvTransaksi.DefaultCellStyle = dataGridViewCellStyle1;
             this.dgvTransaksi.Location = new System.Drawing.Point(56, 334);
             this.dgvTransaksi.Name = "dgvTransaksi";
             this.dgvTransaksi.RowHeadersWidth = 51;
@@ -288,6 +276,7 @@
             this.cmbHewan.Name = "cmbHewan";
             this.cmbHewan.Size = new System.Drawing.Size(435, 25);
             this.cmbHewan.TabIndex = 24;
+            this.cmbHewan.SelectedIndexChanged += new System.EventHandler(this.cmbHewan_SelectedIndexChanged);
             // 
             // cmbKamar
             // 
@@ -353,12 +342,23 @@
             this.btnKembali.UseVisualStyleBackColor = false;
             this.btnKembali.Click += new System.EventHandler(this.btnKembali_Click);
             // 
+            // txtJenisHewan
+            // 
+            this.txtJenisHewan.Font = new System.Drawing.Font("Segoe UI Semibold", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtJenisHewan.Location = new System.Drawing.Point(215, 104);
+            this.txtJenisHewan.Name = "txtJenisHewan";
+            this.txtJenisHewan.ReadOnly = true;
+            this.txtJenisHewan.Size = new System.Drawing.Size(435, 25);
+            this.txtJenisHewan.TabIndex = 30;
+            this.txtJenisHewan.TabStop = false;
+            // 
             // DataTransaksi
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackgroundImage = global::PABDHotel.Properties.Resources.Form_background_image_2;
             this.ClientSize = new System.Drawing.Size(801, 513);
+            this.Controls.Add(this.txtJenisHewan);
             this.Controls.Add(this.btnKembali);
             this.Controls.Add(this.btnImport);
             this.Controls.Add(this.btnReport);
@@ -375,7 +375,6 @@
             this.Controls.Add(this.txtFasilitas);
             this.Controls.Add(this.dtpCheckOut);
             this.Controls.Add(this.dtpCheckIn);
-            this.Controls.Add(this.cmbJenisHewan);
             this.Controls.Add(this.HargaFasilitas);
             this.Controls.Add(this.Fasilitas);
             this.Controls.Add(this.CheckOut);
@@ -403,7 +402,6 @@
         private System.Windows.Forms.Label CheckOut;
         private System.Windows.Forms.Label Fasilitas;
         private System.Windows.Forms.Label HargaFasilitas;
-        private System.Windows.Forms.ComboBox cmbJenisHewan;
         private System.Windows.Forms.DateTimePicker dtpCheckIn;
         private System.Windows.Forms.DateTimePicker dtpCheckOut;
         private System.Windows.Forms.TextBox txtFasilitas;
@@ -420,6 +418,7 @@
         private System.Windows.Forms.Button btnReport;
         private System.Windows.Forms.Button btnImport;
         private System.Windows.Forms.Button btnKembali;
+        private System.Windows.Forms.TextBox txtJenisHewan;
     }
 }
 
