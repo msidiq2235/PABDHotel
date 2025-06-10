@@ -49,7 +49,7 @@ namespace PABDHotel
 
         private void menu_Load(object sender, EventArgs e)
         {
-            lblStatus.Text = "Selamat datang Admin. Silakan pilih menu yang tersedia.";
+            lblStatus.Text = "Selamat datang. Silakan pilih menu yang tersedia.";
         }
     }
 }
