@@ -107,6 +107,11 @@ namespace PABDHotel
                 return;
             }
 
+            var confirmResult = MessageBox.Show("Apakah Anda yakin ingin menambah data pemilik ini?", "Konfirmasi Tambah", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            if (confirmResult == DialogResult.No)
+            {
+                return;
+            }
 
             try
             {
@@ -156,6 +161,12 @@ namespace PABDHotel
             if (!IsValidEmail(txtEmail.Text))
             {
                 MessageBox.Show("Format email tidak valid.", "Input Tidak Valid", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            var confirmResult = MessageBox.Show("Apakah Anda yakin ingin mengubah data pemilik ini?", "Konfirmasi Ubah", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            if (confirmResult == DialogResult.No)
+            {
                 return;
             }
 
@@ -224,6 +235,8 @@ namespace PABDHotel
             AppCache.InvalidatePemilikCache();
             LoadData();
             ClearForm();
+
+            MessageBox.Show("Data berhasil di-refresh.", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private void dgvPemilik_CellClick(object sender, DataGridViewCellEventArgs e)

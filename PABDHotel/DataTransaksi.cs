@@ -11,6 +11,7 @@ namespace PABDHotel
     public partial class DataTransaksi : Form
     {
         private string connectionString = "Data Source=LAPTOP-0LTDAB53\\MSIDIQ;Initial Catalog=HotelHewanPeliharaanKuan;Integrated Security=True";
+        private System.Text.StringBuilder analysisResult;
 
         public DataTransaksi()
         {
@@ -19,8 +20,15 @@ namespace PABDHotel
 
         private void DataTransaksi_Load(object sender, EventArgs e)
         {
+            // Panggil semua fungsi pemuatan data saat form pertama kali dibuka
             LoadComboBoxes();
             LoadTransaksi();
+        }
+
+        private void DataTransaksi_Activated(object sender, EventArgs e)
+        {
+            // Otomatis refresh ComboBox saat form kembali aktif
+            LoadComboBoxes();
         }
 
         private void LoadComboBoxes()
@@ -30,10 +38,8 @@ namespace PABDHotel
                 // 1. Memuat data Pemilik dari Cache dan mendekripsinya
                 DataTable dtPemilikFromCache = AppCache.GetPemilikHewan();
                 DataTable dtPemilikDisplay = dtPemilikFromCache.Clone();
-                // Pastikan kolom siap menampung string hasil dekripsi
                 dtPemilikDisplay.Columns["NoHP"].DataType = typeof(string);
                 dtPemilikDisplay.Columns["Email"].DataType = typeof(string);
-
                 foreach (DataRow row in dtPemilikFromCache.Rows)
                 {
                     DataRow newRow = dtPemilikDisplay.NewRow();
@@ -94,6 +100,7 @@ namespace PABDHotel
             dtpCheckOut.Value = DateTime.Now.AddDays(1);
             txtFasilitas.Clear();
             txtHargaFasilitas.Clear();
+            txtJenisHewan.Clear();
             dgvTransaksi.ClearSelection();
         }
 
@@ -106,45 +113,20 @@ namespace PABDHotel
 
         private bool IsNameValid(string name)
         {
-            if (string.IsNullOrEmpty(name)) return true; // Boleh kosong
+            if (string.IsNullOrEmpty(name)) return true;
             return name.All(c => char.IsLetter(c) || char.IsWhiteSpace(c));
-        }
-
-        private void cmbHewan_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            // Pastikan ada item yang dipilih dan bukan event saat dikosongkan
-            if (cmbHewan.SelectedItem is DataRowView drv)
-            {
-                // Ambil nilai dari kolom "Jenis" dari item yang dipilih
-                txtJenisHewan.Text = drv["Jenis"].ToString();
-            }
-            else
-            {
-                // Kosongkan jika tidak ada hewan yang dipilih
-                txtJenisHewan.Text = "";
-            }
         }
 
         private void btnTambah_Click(object sender, EventArgs e)
         {
-            if (cmbPemilik.SelectedValue == null || cmbHewan.SelectedValue == null || cmbKamar.SelectedValue == null)
+            if (cmbPemilik.SelectedValue == null || cmbHewan.SelectedValue == null || cmbKamar.SelectedValue == null) { MessageBox.Show("Harap pilih Pemilik, Hewan, dan Tipe Kamar.", "Input Tidak Lengkap", MessageBoxButtons.OK, MessageBoxIcon.Warning); return; }
+            if (dtpCheckIn.Value.Date >= dtpCheckOut.Value.Date) { MessageBox.Show("Tanggal Check-Out harus setelah Tanggal Check-In.", "Input Tidak Valid", MessageBoxButtons.OK, MessageBoxIcon.Warning); return; }
+            if (!IsNameValid(txtFasilitas.Text)) { MessageBox.Show("Nama Fasilitas hanya boleh berisi huruf dan spasi.", "Input Tidak Valid", MessageBoxButtons.OK, MessageBoxIcon.Warning); return; }
+            if (!decimal.TryParse(txtHargaFasilitas.Text, out decimal hargaFasilitas) && !string.IsNullOrEmpty(txtHargaFasilitas.Text)) { MessageBox.Show("Harga Fasilitas harus berupa angka yang valid.", "Input Tidak Valid", MessageBoxButtons.OK, MessageBoxIcon.Warning); return; }
+
+            var confirmResult = MessageBox.Show("Apakah Anda yakin ingin menambah transaksi ini?", "Konfirmasi Tambah", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            if (confirmResult == DialogResult.No)
             {
-                MessageBox.Show("Harap pilih Pemilik, Hewan, dan Tipe Kamar.", "Input Tidak Lengkap", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-            if (dtpCheckIn.Value.Date >= dtpCheckOut.Value.Date)
-            {
-                MessageBox.Show("Tanggal Check-Out harus setelah Tanggal Check-In.", "Input Tidak Valid", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-            if (!IsNameValid(txtFasilitas.Text))
-            {
-                MessageBox.Show("Nama Fasilitas hanya boleh berisi huruf dan spasi.", "Input Tidak Valid", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-            if (!decimal.TryParse(txtHargaFasilitas.Text, out decimal hargaFasilitas) && !string.IsNullOrEmpty(txtHargaFasilitas.Text))
-            {
-                MessageBox.Show("Harga Fasilitas harus berupa angka yang valid.", "Input Tidak Valid", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
@@ -162,7 +144,6 @@ namespace PABDHotel
                         cmd.Parameters.AddWithValue("@TanggalCheckOut", dtpCheckOut.Value);
                         cmd.Parameters.AddWithValue("@NamaFasilitas", string.IsNullOrWhiteSpace(txtFasilitas.Text) ? (object)DBNull.Value : txtFasilitas.Text);
                         cmd.Parameters.AddWithValue("@HargaFasilitas", hargaFasilitas);
-
                         conn.Open();
                         cmd.ExecuteNonQuery();
                         MessageBox.Show("Transaksi berhasil ditambahkan.");
@@ -171,10 +152,7 @@ namespace PABDHotel
                 LoadTransaksi();
                 ClearForm();
             }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error saat menambah transaksi: " + ex.Message);
-            }
+            catch (Exception ex) { MessageBox.Show("Error saat menambah transaksi: " + ex.Message); }
         }
 
         private void btnUbah_Click(object sender, EventArgs e)
@@ -182,15 +160,12 @@ namespace PABDHotel
             if (dgvTransaksi.SelectedRows.Count == 0) { MessageBox.Show("Pilih transaksi yang ingin diubah!"); return; }
             if (cmbPemilik.SelectedValue == null || cmbHewan.SelectedValue == null || cmbKamar.SelectedValue == null) { MessageBox.Show("Harap pilih Pemilik, Hewan, dan Tipe Kamar."); return; }
             if (dtpCheckIn.Value.Date >= dtpCheckOut.Value.Date) { MessageBox.Show("Tanggal Check-Out harus setelah Tanggal Check-In."); return; }
+            if (!IsNameValid(txtFasilitas.Text)) { MessageBox.Show("Nama Fasilitas hanya boleh berisi huruf dan spasi.", "Input Tidak Valid", MessageBoxButtons.OK, MessageBoxIcon.Warning); return; }
+            if (!decimal.TryParse(txtHargaFasilitas.Text, out decimal hargaFasilitas) && !string.IsNullOrEmpty(txtHargaFasilitas.Text)) { MessageBox.Show("Harga Fasilitas harus berupa angka yang valid.", "Input Tidak Valid", MessageBoxButtons.OK, MessageBoxIcon.Warning); return; }
 
-            if (!IsNameValid(txtFasilitas.Text))
+            var confirmResult = MessageBox.Show("Apakah Anda yakin ingin mengubah transaksi ini?", "Konfirmasi Ubah", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            if (confirmResult == DialogResult.No)
             {
-                MessageBox.Show("Nama Fasilitas hanya boleh berisi huruf dan spasi.", "Input Tidak Valid", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-            if (!decimal.TryParse(txtHargaFasilitas.Text, out decimal hargaFasilitas) && !string.IsNullOrEmpty(txtHargaFasilitas.Text))
-            {
-                MessageBox.Show("Harga Fasilitas harus berupa angka yang valid.", "Input Tidak Valid", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
@@ -210,7 +185,6 @@ namespace PABDHotel
                         cmd.Parameters.AddWithValue("@TanggalCheckOut", dtpCheckOut.Value);
                         cmd.Parameters.AddWithValue("@NamaFasilitas", string.IsNullOrWhiteSpace(txtFasilitas.Text) ? (object)DBNull.Value : txtFasilitas.Text);
                         cmd.Parameters.AddWithValue("@HargaFasilitas", hargaFasilitas);
-
                         conn.Open();
                         cmd.ExecuteNonQuery();
                         MessageBox.Show("Transaksi berhasil diubah.");
@@ -219,19 +193,14 @@ namespace PABDHotel
                 LoadTransaksi();
                 ClearForm();
             }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error saat mengubah transaksi: " + ex.Message);
-            }
+            catch (Exception ex) { MessageBox.Show("Error saat mengubah transaksi: " + ex.Message); }
         }
 
         private void btnHapus_Click(object sender, EventArgs e)
         {
             if (dgvTransaksi.SelectedRows.Count == 0) { MessageBox.Show("Pilih transaksi yang ingin dihapus!"); return; }
-
             var confirm = MessageBox.Show("Yakin ingin menghapus transaksi ini?", "Konfirmasi Hapus", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
             if (confirm == DialogResult.No) return;
-
             try
             {
                 int transaksiId = Convert.ToInt32(dgvTransaksi.SelectedRows[0].Cells["TransaksiID"].Value);
@@ -249,22 +218,19 @@ namespace PABDHotel
                 LoadTransaksi();
                 ClearForm();
             }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error saat menghapus transaksi: " + ex.Message);
-            }
+            catch (Exception ex) { MessageBox.Show("Error saat menghapus transaksi: " + ex.Message); }
         }
 
         private void btnRefresh_Click(object sender, EventArgs e)
         {
-            // Paksa ambil data baru dari DB untuk semua cache
             AppCache.InvalidatePemilikCache();
             AppCache.InvalidateHewanCache();
             AppCache.InvalidateKamarCache();
-
             LoadComboBoxes();
             LoadTransaksi();
             ClearForm();
+
+            MessageBox.Show("Data berhasil di-refresh.", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private void dgvTransaksi_CellClick(object sender, DataGridViewCellEventArgs e)
@@ -274,86 +240,62 @@ namespace PABDHotel
                 try
                 {
                     DataGridViewRow row = dgvTransaksi.Rows[e.RowIndex];
-
-                    // Mengisi ComboBox
                     cmbPemilik.SelectedValue = row.Cells["PemilikID"].Value;
                     cmbHewan.SelectedValue = row.Cells["HewanID"].Value;
                     cmbKamar.SelectedValue = row.Cells["KamarID"].Value;
 
-                    // Setelah cmbHewan diisi, jenis hewan akan otomatis terisi
-                    // karena event SelectedIndexChanged terpicu.
-                    // Namun, kita bisa pastikan lagi di sini.
                     if (dgvTransaksi.Columns.Contains("Jenis") && row.Cells["Jenis"].Value != null)
                     {
                         txtJenisHewan.Text = row.Cells["Jenis"].Value.ToString();
                     }
 
-                    // Mengisi kontrol lain
                     dtpCheckIn.Value = Convert.ToDateTime(row.Cells["TanggalCheckIn"].Value);
                     dtpCheckOut.Value = Convert.ToDateTime(row.Cells["TanggalCheckOut"].Value);
                     txtFasilitas.Text = row.Cells["NamaFasilitas"].Value?.ToString() ?? "";
                     txtHargaFasilitas.Text = row.Cells["HargaFasilitas"].Value?.ToString() ?? "";
                 }
-                catch (Exception) { /* Abaikan error */ }
+                catch (Exception) { /* Abaikan error jika user klik saat data refresh */ }
             }
         }
 
-        private System.Text.StringBuilder analysisResult;
+        private void cmbHewan_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (cmbHewan.SelectedItem is DataRowView drv)
+            {
+                txtJenisHewan.Text = drv["Jenis"].ToString();
+            }
+            else
+            {
+                txtJenisHewan.Text = "";
+            }
+        }
 
         private void OnInfoMessage(object sender, SqlInfoMessageEventArgs e)
         {
-            analysisResult.AppendLine(e.Message);
+            if (analysisResult != null)
+                analysisResult.AppendLine(e.Message);
         }
 
         private void btnAnalisis_Click(object sender, EventArgs e)
         {
-            // Inisialisasi StringBuilder setiap kali tombol diklik
             analysisResult = new System.Text.StringBuilder();
-
-            // Tentukan Stored Procedure 
             string queryToAnalyze = "EXEC GetSemuaTransaksiDetail;";
-
-
+            MessageBox.Show("Memulai analisis query...", "Info");
             try
             {
                 using (SqlConnection conn = new SqlConnection(connectionString))
                 {
-                    // Daftarkan event handler SEBELUM membuka koneksi
                     conn.InfoMessage += OnInfoMessage;
-
                     conn.Open();
-
-                    // Gabungkan semua perintah dalam satu string
-                    string commandText = $@"
-                    SET STATISTICS IO ON;
-                    SET STATISTICS TIME ON;
-
-                    {queryToAnalyze}
-
-                    SET STATISTICS IO OFF;
-                    SET STATISTICS TIME OFF;";
-
+                    string commandText = $@"SET STATISTICS IO ON; SET STATISTICS TIME ON; {queryToAnalyze} SET STATISTICS IO OFF; SET STATISTICS TIME OFF;";
                     using (SqlCommand cmd = new SqlCommand(commandText, conn))
                     {
-                        // Gunakan ExecuteNonQuery karena kita tidak tertarik dengan hasil datanya,
-                        // hanya pesan statistiknya.
                         cmd.ExecuteNonQuery();
                     }
                 }
-
-                // Tampilkan semua pesan statistik yang sudah terkumpul
-                MessageBox.Show(analysisResult.ToString(), "Hasil Analisis Query", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(analysisResult.ToString(), "Hasil Analisis Query");
             }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Gagal melakukan analisis: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-
-        private void btnReport_Click(object sender, EventArgs e)
-        {
-            FormLaporanTransaksi frm = new FormLaporanTransaksi();
-            frm.Show();
+            catch (Exception ex) { MessageBox.Show("Gagal melakukan analisis: " + ex.Message, "Error"); }
         }
 
         private void btnImport_Click(object sender, EventArgs e)
@@ -371,8 +313,6 @@ namespace PABDHotel
 
         private void ImportDataFromExcel(string filePath)
         {
-            // Peringatan: Import transaksi sangat kompleks.
-            // File Excel HARUS memiliki kolom: NamaPemilik, NamaHewan, TipeKamar, TanggalCheckIn, TanggalCheckOut, NamaFasilitas, HargaFasilitas
             int successCount = 0;
             int failCount = 0;
             var errors = new System.Text.StringBuilder();
@@ -386,7 +326,6 @@ namespace PABDHotel
                         var result = reader.AsDataSet(new ExcelDataSetConfiguration() { ConfigureDataTable = (_) => new ExcelDataTableConfiguration() { UseHeaderRow = true } });
                         DataTable dtExcel = result.Tables[0];
 
-                        // Ambil data lookup dari cache
                         DataTable dtPemilik = AppCache.GetPemilikHewan();
                         DataTable dtHewan = AppCache.GetHewan();
                         DataTable dtKamar = AppCache.GetKamar();
@@ -395,7 +334,6 @@ namespace PABDHotel
                         {
                             try
                             {
-                                // Baca data dari Excel
                                 string namaPemilik = row["NamaPemilik"].ToString();
                                 string namaHewan = row["NamaHewan"].ToString();
                                 string tipeKamar = row["TipeKamar"].ToString();
@@ -404,7 +342,6 @@ namespace PABDHotel
                                 string namaFasilitas = row["NamaFasilitas"].ToString();
                                 decimal.TryParse(row["HargaFasilitas"].ToString(), out decimal hargaFasilitas);
 
-                                // --- Cari ID ---
                                 DataRow[] pemilikRows = dtPemilik.Select($"Nama = '{namaPemilik.Replace("'", "''")}'");
                                 if (pemilikRows.Length == 0) { throw new Exception($"Pemilik '{namaPemilik}' tidak ditemukan."); }
                                 int pemilikId = Convert.ToInt32(pemilikRows[0]["PemilikID"]);
@@ -417,7 +354,6 @@ namespace PABDHotel
                                 if (kamarRows.Length == 0) { throw new Exception($"Tipe Kamar '{tipeKamar}' tidak ditemukan."); }
                                 int kamarId = Convert.ToInt32(kamarRows[0]["KamarID"]);
 
-                                // --- Simpan ke DB ---
                                 using (SqlConnection conn = new SqlConnection(connectionString))
                                 {
                                     using (SqlCommand cmd = new SqlCommand("AddTransaksi", conn))
@@ -447,7 +383,7 @@ namespace PABDHotel
                 string summary = $"Proses import selesai.\n\nBerhasil: {successCount} data.\nGagal: {failCount} data.";
                 if (failCount > 0) summary += "\n\nDetail Kegagalan:\n" + errors.ToString();
                 MessageBox.Show(summary, "Laporan Import");
-                LoadTransaksi(); // Refresh tabel transaksi
+                LoadTransaksi();
             }
             catch (Exception ex)
             {
@@ -458,6 +394,12 @@ namespace PABDHotel
         private void btnKembali_Click(object sender, EventArgs e)
         {
             this.Close();
+        }
+
+        private void btnReport_Click(object sender, EventArgs e)
+        {
+            FormLaporanTransaksi frm = new FormLaporanTransaksi();
+            frm.Show();
         }
     }
 }

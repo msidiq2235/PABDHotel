@@ -107,6 +107,8 @@ namespace PABDHotel
                 return;
             }
             // ===================================
+            var confirmResult = MessageBox.Show("Apakah Anda yakin ingin menambah data hewan ini?", "Konfirmasi Tambah", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            if (confirmResult == DialogResult.No) return;
 
             try
             {
@@ -165,6 +167,8 @@ namespace PABDHotel
                 return;
             }
             // ===================================
+            var confirmResult = MessageBox.Show("Apakah Anda yakin ingin mengubah data hewan ini?", "Konfirmasi Ubah", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            if (confirmResult == DialogResult.No) return;
 
             try
             {
@@ -252,12 +256,13 @@ namespace PABDHotel
 
         private void btnRefresh_Click(object sender, EventArgs e)
         {
-            // Memaksa ambil data baru dari DB untuk semua
             AppCache.InvalidatePemilikCache();
             AppCache.InvalidateHewanCache();
             LoadPemilik();
             LoadData();
             ClearForm();
+
+            MessageBox.Show("Data berhasil di-refresh.", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private System.Text.StringBuilder analysisResult;

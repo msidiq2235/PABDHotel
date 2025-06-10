@@ -179,6 +179,8 @@ namespace PABDHotel
             AppCache.InvalidateKamarCache();
             LoadKamarData();
             ClearForm();
+
+            MessageBox.Show("Data berhasil di-refresh.", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private void dgvKamar_CellClick(object sender, DataGridViewCellEventArgs e)
