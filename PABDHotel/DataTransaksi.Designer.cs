@@ -188,6 +188,8 @@
             // btnTambah
             // 
             this.btnTambah.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnTambah.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.btnTambah.Font = new System.Drawing.Font("Segoe UI Semibold", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnTambah.Location = new System.Drawing.Point(687, 79);
             this.btnTambah.Name = "btnTambah";
             this.btnTambah.Size = new System.Drawing.Size(75, 23);
@@ -272,7 +274,7 @@
             // 
             this.cmbHewan.Font = new System.Drawing.Font("Segoe UI Semibold", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cmbHewan.FormattingEnabled = true;
-            this.cmbHewan.Location = new System.Drawing.Point(215, 75);
+            this.cmbHewan.Location = new System.Drawing.Point(215, 71);
             this.cmbHewan.Name = "cmbHewan";
             this.cmbHewan.Size = new System.Drawing.Size(435, 25);
             this.cmbHewan.TabIndex = 24;
@@ -344,6 +346,7 @@
             // 
             // txtJenisHewan
             // 
+            this.txtJenisHewan.BackColor = System.Drawing.Color.White;
             this.txtJenisHewan.Font = new System.Drawing.Font("Segoe UI Semibold", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtJenisHewan.Location = new System.Drawing.Point(215, 104);
             this.txtJenisHewan.Name = "txtJenisHewan";

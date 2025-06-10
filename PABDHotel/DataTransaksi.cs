@@ -19,7 +19,6 @@ namespace PABDHotel
 
         private void DataTransaksi_Load(object sender, EventArgs e)
         {
-            // Memuat semua data saat form pertama kali dibuka
             LoadComboBoxes();
             LoadTransaksi();
         }
@@ -148,7 +147,6 @@ namespace PABDHotel
                 MessageBox.Show("Harga Fasilitas harus berupa angka yang valid.", "Input Tidak Valid", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
-            // ===================================
 
             try
             {
