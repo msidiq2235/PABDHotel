@@ -49,7 +49,14 @@ namespace PABDHotel
 
         private void menu_Load(object sender, EventArgs e)
         {
+            DatabaseHelper.EnsureIndexes();
+
             lblStatus.Text = "Selamat datang. Silakan pilih menu yang tersedia.";
+        }
+
+        private void label1_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

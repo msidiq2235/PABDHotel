@@ -89,6 +89,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppCache.cs" />
+    <Compile Include="DatabaseHelper.cs" />
     <Compile Include="DataHewan.cs">
       <SubType>Form</SubType>
     </Compile>
