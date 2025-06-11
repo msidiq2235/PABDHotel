@@ -91,6 +91,11 @@ namespace PABDHotel
         private void btnTambah_Click(object sender, EventArgs e)
         {
             // Validasi
+            if (string.IsNullOrWhiteSpace(txtNama.Text) || string.IsNullOrWhiteSpace(txtNoHP.Text))
+            {
+                MessageBox.Show("Nama dan No HP wajib diisi.", "Input Tidak Lengkap", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
             if (!IsNameValid(txtNama.Text))
             {
                 MessageBox.Show("Nama pemilik hanya boleh berisi huruf dan spasi.", "Input Tidak Valid", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -148,6 +153,11 @@ namespace PABDHotel
                 return;
             }
             // Validasi
+            if (string.IsNullOrWhiteSpace(txtNama.Text) || string.IsNullOrWhiteSpace(txtNoHP.Text))
+            {
+                MessageBox.Show("Nama dan No HP wajib diisi.", "Input Tidak Lengkap", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
             if (!IsNameValid(txtNama.Text))
             {
                 MessageBox.Show("Nama pemilik hanya boleh berisi huruf dan spasi.", "Input Tidak Valid", MessageBoxButtons.OK, MessageBoxIcon.Warning);
