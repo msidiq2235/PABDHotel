@@ -61,6 +61,7 @@
     <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Buffers.4.5.1\lib\net461\System.Buffers.dll</HintPath>
     </Reference>
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.IO.Compression" />
     <Reference Include="System.Memory, Version=4.0.1.2, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
@@ -77,6 +78,8 @@
     <Reference Include="System.Text.Encoding.CodePages, Version=9.0.0.5, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Text.Encoding.CodePages.9.0.5\lib\net462\System.Text.Encoding.CodePages.dll</HintPath>
     </Reference>
+    <Reference Include="System.Windows.Forms.DataVisualization" />
+    <Reference Include="System.Windows.Forms.DataVisualization.Design" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -139,11 +142,18 @@
     <Compile Include="FormLaporanTransaksi.Designer.cs">
       <DependentUpon>FormLaporanTransaksi.cs</DependentUpon>
     </Compile>
+    <Compile Include="GrafikJenisHewan.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GrafikJenisHewan.Designer.cs">
+      <DependentUpon>GrafikJenisHewan.cs</DependentUpon>
+    </Compile>
     <Compile Include="HotelHewanPeliharaanKuanDataSet.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>HotelHewanPeliharaanKuanDataSet.xsd</DependentUpon>
     </Compile>
+    <Compile Include="Koneksi.cs" />
     <Compile Include="LaporanDataSet.cs">
       <DependentUpon>LaporanDataSet.xsd</DependentUpon>
     </Compile>
@@ -184,6 +194,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="FormLaporanTransaksi.resx">
       <DependentUpon>FormLaporanTransaksi.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GrafikJenisHewan.resx">
+      <DependentUpon>GrafikJenisHewan.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="LaporanHewan.rdlc" />
     <EmbeddedResource Include="LaporanKamar.rdlc" />

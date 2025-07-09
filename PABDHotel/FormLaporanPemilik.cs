@@ -8,7 +8,7 @@ namespace PABDHotel
 {
     public partial class FormLaporanPemilik : Form
     {
-        private string connectionString = "Data Source=LAPTOP-0LTDAB53\\MSIDIQ;Initial Catalog=HotelHewanPeliharaanKuan;Integrated Security=True";
+        private readonly Koneksi kn = new Koneksi();
 
         public FormLaporanPemilik()
         {
@@ -21,7 +21,7 @@ namespace PABDHotel
             {
                 // 1. Ambil data dari database (hasilnya masih terenkripsi)
                 DataTable dtEncrypted = new DataTable();
-                using (SqlConnection conn = new SqlConnection(connectionString))
+                using (SqlConnection conn = new SqlConnection(kn.connectionString()))
                 {
                     using (SqlCommand cmd = new SqlCommand("GetSemuaPemilikHewan", conn))
                     {

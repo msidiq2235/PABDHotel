@@ -9,7 +9,7 @@ namespace PABDHotel
 {
     public partial class DataKamar : Form
     {
-        private string connectionString = "Data Source=LAPTOP-0LTDAB53\\MSIDIQ;Initial Catalog=HotelHewanPeliharaanKuan;Integrated Security=True";
+        private readonly Koneksi kn = new Koneksi();
 
         public DataKamar()
         {
@@ -57,7 +57,7 @@ namespace PABDHotel
 
             try
             {
-                using (SqlConnection conn = new SqlConnection(connectionString))
+                using (SqlConnection conn = new SqlConnection(kn.connectionString()))
                 {
                     // Menggunakan Stored Procedure AddKamar
                     using (SqlCommand cmd = new SqlCommand("AddKamar", conn))
@@ -103,7 +103,7 @@ namespace PABDHotel
             try
             {
                 int kamarId = Convert.ToInt32(dgvKamar.SelectedRows[0].Cells["KamarID"].Value);
-                using (SqlConnection conn = new SqlConnection(connectionString))
+                using (SqlConnection conn = new SqlConnection(kn.connectionString()))
                 {
                     // Menggunakan Stored Procedure UpdateKamar
                     using (SqlCommand cmd = new SqlCommand("UpdateKamar", conn))
@@ -141,7 +141,7 @@ namespace PABDHotel
             try
             {
                 int kamarId = Convert.ToInt32(dgvKamar.SelectedRows[0].Cells["KamarID"].Value);
-                using (SqlConnection conn = new SqlConnection(connectionString))
+                using (SqlConnection conn = new SqlConnection(kn.connectionString()))
                 {
                     // Menggunakan Stored Procedure DeleteKamar
                     using (SqlCommand cmd = new SqlCommand("DeleteKamar", conn))
@@ -210,7 +210,7 @@ namespace PABDHotel
 
             try
             {
-                using (SqlConnection conn = new SqlConnection(connectionString))
+                using (SqlConnection conn = new SqlConnection(kn.connectionString()))
                 {
                     // Daftarkan event handler SEBELUM membuka koneksi
                     conn.InfoMessage += OnInfoMessage;
@@ -291,7 +291,7 @@ namespace PABDHotel
                                     continue;
                                 }
 
-                                using (SqlConnection conn = new SqlConnection(connectionString))
+                                using (SqlConnection conn = new SqlConnection(kn.connectionString()))
                                 {
                                     using (SqlCommand cmd = new SqlCommand("AddKamar", conn))
                                     {

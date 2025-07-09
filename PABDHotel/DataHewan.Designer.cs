@@ -67,6 +67,7 @@
             this.dgvHewan.Size = new System.Drawing.Size(714, 222);
             this.dgvHewan.TabIndex = 0;
             this.dgvHewan.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvHewan_CellClick);
+            this.dgvHewan.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvHewan_CellContentClick);
             // 
             // btnTambah
             // 

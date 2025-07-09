@@ -54,6 +54,7 @@
             this.btnImport = new System.Windows.Forms.Button();
             this.btnKembali = new System.Windows.Forms.Button();
             this.txtJenisHewan = new System.Windows.Forms.TextBox();
+            this.button1 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dgvTransaksi)).BeginInit();
             this.SuspendLayout();
             // 
@@ -271,6 +272,7 @@
             this.cmbPemilik.Name = "cmbPemilik";
             this.cmbPemilik.Size = new System.Drawing.Size(435, 25);
             this.cmbPemilik.TabIndex = 23;
+            this.cmbPemilik.SelectedIndexChanged += new System.EventHandler(this.cmbPemilik_SelectedIndexChanged);
             // 
             // cmbHewan
             // 
@@ -357,12 +359,26 @@
             this.txtJenisHewan.TabIndex = 30;
             this.txtJenisHewan.TabStop = false;
             // 
+            // button1
+            // 
+            this.button1.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.button1.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.button1.Font = new System.Drawing.Font("Segoe UI Semibold", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button1.Location = new System.Drawing.Point(687, 248);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(75, 23);
+            this.button1.TabIndex = 31;
+            this.button1.Text = "Lihat Grafik";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
             // DataTransaksi
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackgroundImage = global::PABDHotel.Properties.Resources.Form_background_image_2;
             this.ClientSize = new System.Drawing.Size(801, 513);
+            this.Controls.Add(this.button1);
             this.Controls.Add(this.txtJenisHewan);
             this.Controls.Add(this.btnKembali);
             this.Controls.Add(this.btnImport);
@@ -424,6 +440,7 @@
         private System.Windows.Forms.Button btnImport;
         private System.Windows.Forms.Button btnKembali;
         private System.Windows.Forms.TextBox txtJenisHewan;
+        private System.Windows.Forms.Button button1;
     }
 }
 

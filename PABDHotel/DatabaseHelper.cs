@@ -5,18 +5,20 @@ namespace PABDHotel
 {
     public static class DatabaseHelper
     {
-        private static string connectionString = "Data Source=LAPTOP-0LTDAB53\\MSIDIQ;Initial Catalog=HotelHewanPeliharaanKuan;Integrated Security=True";
-
         // Fungsi ini akan memeriksa dan membuat semua indeks yang diperlukan jika belum ada.
         public static void EnsureIndexes()
         {
             try
             {
-                using (SqlConnection conn = new SqlConnection(connectionString))
+                // 1. Buat instance dari kelas Koneksi
+                Koneksi kn = new Koneksi();
+
+                // 2. Gunakan method .connectionString() dari kelas Koneksi
+                using (SqlConnection conn = new SqlConnection(kn.connectionString()))
                 {
                     conn.Open();
 
-  
+                    // Skrip SQL untuk membuat indeks (tidak ada perubahan di sini)
                     string indexScript = @"
                         -- Indeks untuk PemilikHewan
                         IF NOT EXISTS (SELECT * FROM sys.indexes WHERE name = 'idx_PemilikHewan_Nama' AND object_id = OBJECT_ID('dbo.PemilikHewan'))
@@ -47,11 +49,11 @@ namespace PABDHotel
                     {
                         cmd.ExecuteNonQuery();
                     }
-
                 }
             }
             catch (Exception ex)
             {
+                // Penanganan error (tidak ada perubahan di sini)
                 System.Windows.Forms.MessageBox.Show($"Error saat memastikan indeks database: {ex.Message}", "Database Error", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
             }
         }

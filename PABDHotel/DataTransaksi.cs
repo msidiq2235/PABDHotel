@@ -10,7 +10,7 @@ namespace PABDHotel
 {
     public partial class DataTransaksi : Form
     {
-        private string connectionString = "Data Source=LAPTOP-0LTDAB53\\MSIDIQ;Initial Catalog=HotelHewanPeliharaanKuan;Integrated Security=True";
+        private readonly Koneksi kn = new Koneksi();
         private System.Text.StringBuilder analysisResult;
 
         public DataTransaksi()
@@ -53,12 +53,7 @@ namespace PABDHotel
                 cmbPemilik.DisplayMember = "Nama";
                 cmbPemilik.ValueMember = "PemilikID";
 
-                // 2. Memuat data Hewan dari Cache
-                cmbHewan.DataSource = AppCache.GetHewan();
-                cmbHewan.DisplayMember = "NamaHewan";
-                cmbHewan.ValueMember = "HewanID";
-
-                // 3. Memuat data Kamar dari Cache
+                // 2. Memuat data Kamar dari Cache
                 cmbKamar.DataSource = AppCache.GetKamar();
                 cmbKamar.DisplayMember = "TipeKamar";
                 cmbKamar.ValueMember = "KamarID";
@@ -77,7 +72,7 @@ namespace PABDHotel
             {
                 // Data transaksi selalu diambil langsung dari DB
                 DataTable dt = new DataTable();
-                using (SqlConnection conn = new SqlConnection(connectionString))
+                using (SqlConnection conn = new SqlConnection(kn.connectionString()))
                 {
                     using (SqlCommand cmd = new SqlCommand("GetSemuaTransaksiDetail", conn))
                     {
@@ -107,7 +102,7 @@ namespace PABDHotel
         private void ClearComboBoxes()
         {
             cmbPemilik.SelectedIndex = -1;
-            cmbHewan.SelectedIndex = -1;
+            cmbHewan.DataSource = null; // Kosongkan pilihan hewan
             cmbKamar.SelectedIndex = -1;
         }
 
@@ -132,7 +127,7 @@ namespace PABDHotel
 
             try
             {
-                using (SqlConnection conn = new SqlConnection(connectionString))
+                using (SqlConnection conn = new SqlConnection(kn.connectionString()))
                 {
                     using (SqlCommand cmd = new SqlCommand("AddTransaksi", conn))
                     {
@@ -172,7 +167,7 @@ namespace PABDHotel
             try
             {
                 int transaksiId = Convert.ToInt32(dgvTransaksi.SelectedRows[0].Cells["TransaksiID"].Value);
-                using (SqlConnection conn = new SqlConnection(connectionString))
+                using (SqlConnection conn = new SqlConnection(kn.connectionString()))
                 {
                     using (SqlCommand cmd = new SqlCommand("UpdateTransaksi", conn))
                     {
@@ -204,7 +199,7 @@ namespace PABDHotel
             try
             {
                 int transaksiId = Convert.ToInt32(dgvTransaksi.SelectedRows[0].Cells["TransaksiID"].Value);
-                using (SqlConnection conn = new SqlConnection(connectionString))
+                using (SqlConnection conn = new SqlConnection(kn.connectionString()))
                 {
                     using (SqlCommand cmd = new SqlCommand("DeleteTransaksi", conn))
                     {
@@ -258,6 +253,44 @@ namespace PABDHotel
             }
         }
 
+        private void cmbPemilik_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            // Jika tidak ada pemilik yang dipilih, kosongkan ComboBox hewan
+            if (cmbPemilik.SelectedValue == null)
+            {
+                cmbHewan.DataSource = null;
+                return;
+            }
+
+            try
+            {
+                // Ambil ID pemilik yang dipilih
+                int selectedPemilikID = Convert.ToInt32(cmbPemilik.SelectedValue);
+
+                // Ambil daftar LENGKAP hewan dari cache
+                DataTable dtHewan = AppCache.GetHewan();
+
+                // Buat DataView untuk memfilter daftar hewan tersebut
+                DataView dvHewan = new DataView(dtHewan);
+                // Terapkan filter: hanya tampilkan hewan dengan PemilikID yang cocok
+                dvHewan.RowFilter = $"PemilikID = {selectedPemilikID}";
+
+                // Atur ComboBox hewan untuk menggunakan data yang sudah difilter
+                cmbHewan.DataSource = dvHewan;
+                cmbHewan.DisplayMember = "NamaHewan";
+                cmbHewan.ValueMember = "HewanID";
+
+                // Kosongkan pilihan awal
+                cmbHewan.SelectedIndex = -1;
+                txtJenisHewan.Text = "";
+            }
+            catch (Exception)
+            {
+                // Jika terjadi error (misal saat form baru dimuat), kosongkan saja
+                cmbHewan.DataSource = null;
+            }
+        }
+
         private void cmbHewan_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (cmbHewan.SelectedItem is DataRowView drv)
@@ -283,7 +316,7 @@ namespace PABDHotel
             MessageBox.Show("Memulai analisis query...", "Info");
             try
             {
-                using (SqlConnection conn = new SqlConnection(connectionString))
+                using (SqlConnection conn = new SqlConnection(kn.connectionString()))
                 {
                     conn.InfoMessage += OnInfoMessage;
                     conn.Open();
@@ -354,7 +387,7 @@ namespace PABDHotel
                                 if (kamarRows.Length == 0) { throw new Exception($"Tipe Kamar '{tipeKamar}' tidak ditemukan."); }
                                 int kamarId = Convert.ToInt32(kamarRows[0]["KamarID"]);
 
-                                using (SqlConnection conn = new SqlConnection(connectionString))
+                                using (SqlConnection conn = new SqlConnection(kn.connectionString()))
                                 {
                                     using (SqlCommand cmd = new SqlCommand("AddTransaksi", conn))
                                     {
@@ -400,6 +433,13 @@ namespace PABDHotel
         {
             FormLaporanTransaksi frm = new FormLaporanTransaksi();
             frm.Show();
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            GrafikJenisHewan gf = new GrafikJenisHewan();
+            gf.ShowDialog();
+            this.Close();
         }
     }
 }

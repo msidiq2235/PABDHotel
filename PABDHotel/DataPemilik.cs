@@ -10,8 +10,8 @@ namespace PABDHotel
 {
     public partial class DataPemilik : Form
     {
-        
-        private string connectionString = "Data Source=LAPTOP-0LTDAB53\\MSIDIQ;Initial Catalog=HotelHewanPeliharaanKuan;Integrated Security=True";
+
+        private readonly Koneksi kn = new Koneksi();
 
         public DataPemilik()
         {
@@ -96,17 +96,20 @@ namespace PABDHotel
                 MessageBox.Show("Nama dan No HP wajib diisi.", "Input Tidak Lengkap", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
+
             if (!IsNameValid(txtNama.Text))
             {
                 MessageBox.Show("Nama pemilik hanya boleh berisi huruf dan spasi.", "Input Tidak Valid", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
+
             if (!IsNumeric(txtNoHP.Text))
             {
                 MessageBox.Show("Nomor HP hanya boleh berisi angka.", "Input Tidak Valid", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
-            if (!IsValidEmail(txtEmail.Text))
+
+            if (!string.IsNullOrWhiteSpace(txtEmail.Text) && !IsValidEmail(txtEmail.Text))
             {
                 MessageBox.Show("Format email tidak valid.", "Input Tidak Valid", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
@@ -120,30 +123,51 @@ namespace PABDHotel
 
             try
             {
-                using (SqlConnection conn = new SqlConnection(connectionString))
+                using (SqlConnection conn = new SqlConnection(kn.connectionString()))
                 {
                     using (SqlCommand cmd = new SqlCommand("AddPemilikHewan", conn))
                     {
                         cmd.CommandType = CommandType.StoredProcedure;
                         cmd.Parameters.AddWithValue("@Nama", txtNama.Text);
                         cmd.Parameters.AddWithValue("@NoHP", EncryptionHelper.Encrypt(txtNoHP.Text));
-                        cmd.Parameters.AddWithValue("@Email", EncryptionHelper.Encrypt(txtEmail.Text));
+
+                        // Email dienkripsi hanya jika tidak kosong
+                        if (!string.IsNullOrWhiteSpace(txtEmail.Text))
+                        {
+                            cmd.Parameters.AddWithValue("@Email", EncryptionHelper.Encrypt(txtEmail.Text));
+                        }
+                        else
+                        {
+                            cmd.Parameters.AddWithValue("@Email", DBNull.Value);
+                        }
+
                         conn.Open();
                         cmd.ExecuteNonQuery();
                         MessageBox.Show("Data berhasil ditambahkan.");
                     }
                 }
+
                 AppCache.InvalidatePemilikCache(); // Hapus cache setelah perubahan
                 LoadData();
                 ClearForm();
             }
             catch (SqlException ex)
             {
-                if (ex.Number == 2627 || ex.Number == 2601) { MessageBox.Show("Error: Nomor HP atau Email sudah terdaftar.", "Data Duplikat", MessageBoxButtons.OK, MessageBoxIcon.Warning); }
-                else { MessageBox.Show("Error Database: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error); }
+                if (ex.Number == 2627 || ex.Number == 2601)
+                {
+                    MessageBox.Show("Error: Nomor HP atau Email sudah terdaftar.", "Data Duplikat", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+                else
+                {
+                    MessageBox.Show("Error Database: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
-            catch (Exception ex) { MessageBox.Show("Error: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error); }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
+
 
         private void btnUbah_Click(object sender, EventArgs e)
         {
@@ -183,7 +207,7 @@ namespace PABDHotel
             try
             {
                 int id = Convert.ToInt32(dgvPemilik.SelectedRows[0].Cells["PemilikID"].Value);
-                using (SqlConnection conn = new SqlConnection(connectionString))
+                using (SqlConnection conn = new SqlConnection(kn.connectionString()))
                 {
                     using (SqlCommand cmd = new SqlCommand("UpdatePemilikHewan", conn))
                     {
@@ -216,7 +240,7 @@ namespace PABDHotel
                 try
                 {
                     int id = Convert.ToInt32(dgvPemilik.SelectedRows[0].Cells["PemilikID"].Value);
-                    using (SqlConnection conn = new SqlConnection(connectionString))
+                    using (SqlConnection conn = new SqlConnection(kn.connectionString()))
                     {
                         using (SqlCommand cmd = new SqlCommand("DeletePemilikHewan", conn))
                         {
@@ -282,7 +306,7 @@ namespace PABDHotel
 
             try
             {
-                using (SqlConnection conn = new SqlConnection(connectionString))
+                using (SqlConnection conn = new SqlConnection(kn.connectionString()))
                 {
                     // Daftarkan event handler SEBELUM membuka koneksi
                     conn.InfoMessage += OnInfoMessage;
@@ -392,7 +416,7 @@ namespace PABDHotel
                                 }
 
                                 // Simpan ke database menggunakan Stored Procedure
-                                using (SqlConnection conn = new SqlConnection(connectionString))
+                                using (SqlConnection conn = new SqlConnection(kn.connectionString()))
                                 {
                                     using (SqlCommand cmd = new SqlCommand("AddPemilikHewan", conn))
                                     {

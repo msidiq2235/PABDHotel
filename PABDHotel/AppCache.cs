@@ -7,94 +7,69 @@ namespace PABDHotel
 {
     public static class AppCache
     {
-        // Mendapatkan instance cache default dari .NET
         private static readonly ObjectCache cache = MemoryCache.Default;
 
-        private static string connectionString = "Data Source=LAPTOP-0LTDAB53\\MSIDIQ;Initial Catalog=HotelHewanPeliharaanKuan;Integrated Security=True";
-
-        // Kebijakan kadaluwarsa cache (bisa digunakan bersama)
-        private static CacheItemPolicy policy = new CacheItemPolicy { AbsoluteExpiration = DateTimeOffset.Now.AddMinutes(5.0) };
-
-        // --- Cache untuk Pemilik Hewan ---
-        public static DataTable GetPemilikHewan()
+        // Metode private untuk mengambil dan menyimpan data ke cache, agar tidak ada duplikasi kode.
+        private static DataTable GetAndCacheData(string cacheKey, string storedProcedureName)
         {
-            string cacheKey = "PemilikHewanCache";
+            // 1. Periksa apakah data sudah ada di cache
             if (cache.Contains(cacheKey))
             {
                 return (DataTable)cache[cacheKey];
             }
             else
             {
+                // 2. Jika tidak ada, ambil dari database
                 DataTable dt = new DataTable();
-                using (SqlConnection conn = new SqlConnection(connectionString))
+
+                // Menggunakan kelas Koneksi untuk mendapatkan connection string
+                Koneksi kn = new Koneksi();
+                using (SqlConnection conn = new SqlConnection(kn.connectionString()))
                 {
-                    using (SqlCommand cmd = new SqlCommand("GetSemuaPemilikHewan", conn))
+                    using (SqlCommand cmd = new SqlCommand(storedProcedureName, conn))
                     {
                         cmd.CommandType = CommandType.StoredProcedure;
                         new SqlDataAdapter(cmd).Fill(dt);
                     }
                 }
+
+                // 3. Buat kebijakan kedaluwarsa BARU setiap kali data disimpan
+                var policy = new CacheItemPolicy { AbsoluteExpiration = DateTimeOffset.Now.AddMinutes(5.0) };
+
+                // 4. Simpan data ke cache dengan kebijakan baru
                 cache.Set(cacheKey, dt, policy);
+
                 return dt;
             }
         }
+
+        // --- Metode Publik untuk Mengakses Cache ---
+
+        public static DataTable GetPemilikHewan()
+        {
+            return GetAndCacheData("PemilikHewanCache", "GetSemuaPemilikHewan");
+        }
+
+        public static DataTable GetHewan()
+        {
+            return GetAndCacheData("HewanCache", "GetSemuaHewanDetail");
+        }
+
+        public static DataTable GetKamar()
+        {
+            return GetAndCacheData("KamarCache", "GetSemuaKamar");
+        }
+
+        // --- Metode Publik untuk Menghapus Cache ---
 
         public static void InvalidatePemilikCache()
         {
             cache.Remove("PemilikHewanCache");
         }
 
-        // --- Cache untuk Hewan ---
-        public static DataTable GetHewan()
-        {
-            string cacheKey = "HewanCache";
-            if (cache.Contains(cacheKey))
-            {
-                return (DataTable)cache[cacheKey];
-            }
-            else
-            {
-                DataTable dt = new DataTable();
-                using (SqlConnection conn = new SqlConnection(connectionString))
-                {
-                    using (SqlCommand cmd = new SqlCommand("GetSemuaHewanDetail", conn))
-                    {
-                        cmd.CommandType = CommandType.StoredProcedure;
-                        new SqlDataAdapter(cmd).Fill(dt);
-                    }
-                }
-                cache.Set(cacheKey, dt, policy);
-                return dt;
-            }
-        }
-
         public static void InvalidateHewanCache()
         {
             cache.Remove("HewanCache");
-        }
-
-        // --- Cache untuk Kamar ---
-        public static DataTable GetKamar()
-        {
-            string cacheKey = "KamarCache";
-            if (cache.Contains(cacheKey))
-            {
-                return (DataTable)cache[cacheKey];
-            }
-            else
-            {
-                DataTable dt = new DataTable();
-                using (SqlConnection conn = new SqlConnection(connectionString))
-                {
-                    using (SqlCommand cmd = new SqlCommand("GetSemuaKamar", conn))
-                    {
-                        cmd.CommandType = CommandType.StoredProcedure;
-                        new SqlDataAdapter(cmd).Fill(dt);
-                    }
-                }
-                cache.Set(cacheKey, dt, policy);
-                return dt;
-            }
         }
 
         public static void InvalidateKamarCache()

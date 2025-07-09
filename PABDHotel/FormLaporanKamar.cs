@@ -14,7 +14,7 @@ namespace PABDHotel
 {
     public partial class FormLaporanKamar : Form
     {
-        private string connectionString = "Data Source=LAPTOP-0LTDAB53\\MSIDIQ;Initial Catalog=HotelHewanPeliharaanKuan;Integrated Security=True";
+        private readonly Koneksi kn = new Koneksi();
         public FormLaporanKamar() { InitializeComponent(); }
 
         private void FormLaporanKamar_Load(object sender, EventArgs e)
@@ -22,7 +22,7 @@ namespace PABDHotel
             try
             {
                 DataTable dt = new DataTable();
-                using (SqlConnection conn = new SqlConnection(connectionString))
+                using (SqlConnection conn = new SqlConnection(kn.connectionString()))
                 {
                     // Panggil SP untuk data kamar
                     using (SqlCommand cmd = new SqlCommand("GetSemuaKamar", conn))

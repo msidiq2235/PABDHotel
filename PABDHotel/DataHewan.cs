@@ -10,7 +10,7 @@ namespace PABDHotel
 {
     public partial class DataHewan : Form
     {
-        string connectionString = "Data Source=LAPTOP-0LTDAB53\\MSIDIQ;Initial Catalog=HotelHewanPeliharaanKuan;Integrated Security=True";
+        private readonly Koneksi kn = new Koneksi();
 
         public DataHewan()
         {
@@ -112,7 +112,7 @@ namespace PABDHotel
 
             try
             {
-                using (SqlConnection conn = new SqlConnection(connectionString))
+                using (SqlConnection conn = new SqlConnection(kn.connectionString()))
                 {
                     using (SqlCommand cmd = new SqlCommand("AddHewan", conn))
                     {
@@ -173,7 +173,7 @@ namespace PABDHotel
             try
             {
                 int id = Convert.ToInt32(dgvHewan.SelectedRows[0].Cells["HewanID"].Value);
-                using (SqlConnection conn = new SqlConnection(connectionString))
+                using (SqlConnection conn = new SqlConnection(kn.connectionString()))
                 {
                     using (SqlCommand cmd = new SqlCommand("UpdateHewan", conn))
                     {
@@ -212,7 +212,7 @@ namespace PABDHotel
             try
             {
                 int id = Convert.ToInt32(dgvHewan.SelectedRows[0].Cells["HewanID"].Value);
-                using (SqlConnection conn = new SqlConnection(connectionString))
+                using (SqlConnection conn = new SqlConnection(kn.connectionString()))
                 {
                     using (SqlCommand cmd = new SqlCommand("DeleteHewan", conn))
                     {
@@ -282,7 +282,7 @@ namespace PABDHotel
 
             try
             {
-                using (SqlConnection conn = new SqlConnection(connectionString))
+                using (SqlConnection conn = new SqlConnection(kn.connectionString()))
                 {
                     // Daftarkan event handler SEBELUM membuka koneksi
                     conn.InfoMessage += OnInfoMessage;
@@ -380,7 +380,7 @@ namespace PABDHotel
                                 }
                                 int pemilikId = Convert.ToInt32(pemilikRows[0]["PemilikID"]);
 
-                                using (SqlConnection conn = new SqlConnection(connectionString))
+                                using (SqlConnection conn = new SqlConnection(kn.connectionString()))
                                 {
                                     using (SqlCommand cmd = new SqlCommand("AddHewan", conn))
                                     {
@@ -420,6 +420,11 @@ namespace PABDHotel
         private void btnKembali_Click(object sender, EventArgs e)
         {
             this.Close();
+        }
+
+        private void dgvHewan_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
         }
     }
 }
